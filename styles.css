@@ -1,0 +1,4776 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #bebebe;
+  padding: 20px;
+}
+:root{
+  --bg-main: #dfe6ec;        /* fondo general claro */
+  --bg-panel: #cfd8e3;       /* panel principal */
+  --bg-card: #e8edf2;        /* tarjetas */
+
+  --bg-hover: #dde5ec;
+
+  --text-main: #1c2733;
+  --text-soft: #5c6b7a;
+
+  --line: rgba(0,0,0,0.12);
+
+  --critico: #d64545;
+  --medio: #d9a300;
+  --bajo: #2e8b57;
+
+  --accent: #2f80ed;
+}
+
+#coords {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background: rgba(0,0,0,0.7);
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  z-index: 9999;
+}
+#ruleX{
+  position:fixed;
+  top:0;
+  left:0;
+  height:25px;
+  width:100%;
+  background:#ddd;
+  border-bottom:1px solid #888;
+  font-size:10px;
+  z-index:9998;
+}
+
+/* REGLA VERTICAL */
+#ruleY{
+  position:fixed;
+  top:0;
+  left:0;
+  width:25px;
+  height:100%;
+  background:#ddd;
+  border-right:1px solid #888;
+  font-size:10px;
+  z-index:9998;
+}
+:root{
+  --eje-flujo: 260px;
+}
+
+h1 {
+  margin-bottom: 5px;
+  color: #2c3e50;
+}
+
+p {
+  color: #555;
+}
+
+.mapa-proceso {
+  display: flex;
+  flex-direction: row;
+  gap: 40px;
+  margin-top: 40px;
+  overflow-x: auto;
+  padding-bottom: 20px;
+}
+
+.maquina {
+  min-width: 180px;
+  height: 80px;
+  background: linear-gradient(145deg, #ffffff, #e6e6e6);
+  border: 2px solid #2c3e50;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.maquina::after {
+  content: "➜";
+  position: absolute;
+  right: -30px;
+  font-size: 24px;
+  color: #2c3e50;
+}
+@keyframes flujo {
+  0% { opacity: 0.3; transform: translateX(0); }
+  50% { opacity: 1; transform: translateX(5px); }
+  100% { opacity: 0.3; transform: translateX(0); }
+}
+
+.maquina.final::after {
+  content: "";
+}
+
+.maquina:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 900;
+  display: none;
+}
+
+
+
+.overlay.activo {
+  display: block;
+}
+
+#contenido-equipo {
+  display: grid;
+  gap: 10px;                              
+  align-items: start;
+}
+#contenedor-tareas{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
+  gap:12px;
+}
+#contenedor-parametros{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
+  gap:16px;
+
+  overflow-y:auto; /* 🔥 asegúralo */
+}
+.cerrar {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+}
+/* ========================= */
+/* 📦 PANEL BASE */
+/* ========================= */
+
+.panel{
+  position: fixed;
+  left: 0;
+  bottom: -650px;
+
+  width: 100%;
+  height: 650px;   /* 🔥 FIJO */
+
+
+  background: rgba(200,210,220,0.6); /* 👈 aire industrial */
+  backdrop-filter: blur(6px);
+
+
+  transition: bottom 0.3s ease;
+  z-index: 1000;
+}
+
+.panel.abierto{
+  bottom: 0;
+}
+
+.panel-contenido.modo-tareas #contenedor-tareas{
+  display:grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap:20px;
+}
+
+.panel-contenido.modo-tareas #contenedor-parametros{
+  display:none;
+}
+
+.panel-contenido.modo-parametros #contenedor-tareas{
+  display:none;
+}
+
+.panel-contenido.modo-parametros #contenedor-parametros{
+  display:grid;
+   grid-template-columns: repeat(2, 1fr); 
+  gap:16px;
+
+  width:100%;
+}
+
+
+.panel-contenido{
+  height: 100%;
+
+  padding: 20px;
+  padding-bottom: 80px;
+
+ background: var(--bg-panel);
+
+  display: flex;
+  flex-direction: column;   /* 🔥 cambio clave */
+
+  gap: 15px;
+
+  overflow: hidden;
+}
+#contenedor-tareas,
+#contenedor-parametros{
+  flex: 1;              /* 🔥 esto es lo que te falta */
+  overflow-y: auto;     /* 🔥 scroll interno */
+}
+.panel-contenido.parametros-activo #contenedor-tareas{
+  display:none;
+}
+/* ========================= */
+/* 🧠 HEADER */
+/* ========================= */
+
+.panel-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  padding-bottom:10px;
+  border-bottom:1px solid var(--line);
+}
+
+#titulo-equipo{
+  font-size:15px;
+  font-weight:600;
+  letter-spacing:0.5px;
+
+  color: var(--text-main);
+}
+
+#resumen-equipo{
+  display:flex;
+  gap:12px;
+
+  font-size:14px;
+  font-weight:600;
+
+  color:rgba(255,255,255,0.8);
+}
+
+
+/* ========================= */
+/* 🧱 GRUPOS */
+/* ========================= */
+
+.grupo{
+  background: var(--bg-card);
+
+  border-radius:6px;
+  padding:12px;
+
+  border:1px solid var(--line);
+
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.grupo h3{
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:0.6px;
+
+  color: var(--text-soft);
+
+  border-bottom:1px solid var(--line);
+  padding-bottom:6px;
+}
+#titulo-equipo{
+  color: var(--text-main);
+}
+.tarea-item,
+.param-item{
+  color: var(--text-main);
+}
+.grupo h3{
+  color: var(--text-soft);
+}
+.tarea-item:hover,
+.param-item:hover{
+  background: var(--bg-hover);
+}
+/* ========================= */
+/* 🧊 TAREAS */
+/* ========================= */
+
+.tarea-item{
+  padding:10px 14px;
+  margin:6px 0;
+
+  border-radius:12px;
+
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(10px);
+
+  border:1px solid rgba(255,255,255,0.12);
+
+  box-shadow:
+    0 8px 20px rgba(0,0,0,0.5),
+    inset 0 1px 0 rgba(255,255,255,0.08);
+
+  font-size:13px;
+
+  transition: all 0.2s ease;
+}
+
+.tarea-item:hover,
+.param-item:hover{
+  background: var(--bg-hover);
+}
+
+
+.tarea-item,
+.param-item{
+  padding:6px 8px;
+
+  font-size:12px;
+
+  border-radius:4px;
+
+  background: transparent;
+
+  border-left:3px solid transparent;
+
+  transition:0.15s;
+}
+.param-item{
+  padding:8px 10px;
+  margin:6px 0;
+
+  border-radius:8px;
+
+  background: var(--bg-hover);
+
+  border-left:3px solid transparent;
+
+  font-size:12px;
+
+  transition:0.15s;
+}
+
+.param-item.critico{
+  border-left:3px solid var(--critico);
+}
+
+.param-item.controlado{
+  border-left:3px solid var(--bajo);
+}
+
+.param-item.producto{
+  border-left:3px solid var(--medio);
+}
+
+
+
+/* ========================= */
+/* 🎨 COLORES POR CRITICIDAD */
+/* ========================= */
+.tarea-item.alta{ border-left-color: var(--critico); }
+.tarea-item.media{ border-left-color: var(--medio); }
+.tarea-item.baja{ border-left-color: var(--bajo); }
+
+.param-item.critico{ border-left-color: var(--critico); }
+.param-item.controlado{ border-left-color: var(--bajo); }
+.param-item.producto{ border-left-color: var(--medio); }
+
+
+.tarea-item.alta{
+  border-left:5px solid #ff4d4d;
+
+  background: linear-gradient(
+    90deg,
+    rgba(255,77,77,0.2),
+    rgba(255,77,77,0.03)
+  );
+}
+
+.tarea-item.media{
+  border-left:5px solid #ffaa00;
+
+  background: linear-gradient(
+    90deg,
+    rgba(255,170,0,0.2),
+    rgba(255,170,0,0.03)
+  );
+}
+
+.tarea-item.baja{
+  border-left:5px solid #4caf50;
+
+  background: linear-gradient(
+    90deg,
+    rgba(76,175,80,0.2),
+    rgba(76,175,80,0.03)
+  );
+}
+
+.dimensiones-resumen{
+  display:flex;
+  gap:15px;
+  margin-top:10px;
+  flex-wrap:wrap;
+}
+
+.dimension-box{
+  padding:10px 14px;
+  border-radius:12px;
+
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(6px);
+
+  box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+
+  text-align:center;
+}
+
+.dim-nombre{
+  font-size:11px;
+  opacity:0.7;
+}
+
+.dim-valor{
+  font-size:18px;
+  font-weight:700;
+}
+.tarea-nombre{
+  font-weight:600;
+  margin-bottom:4px;
+}
+
+.tarea-dimensiones{
+  font-size:11px;
+  opacity:0.75;
+
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.dim-item{
+  background: rgba(255,255,255,0.05);
+  padding:2px 6px;
+  border-radius:6px;
+}
+.tarea {
+  border-left: 6px solid;
+  padding: 10px;
+  margin-bottom: 10px;
+  background: #d9dde2;
+}
+
+.tarea.alta {
+  border-color: #e74c3c;
+}
+
+.tarea.media {
+  border-color: #f1c40f;
+}
+
+.tarea.baja {
+  border-color: #2ecc71;
+}
+
+/* ===== PLANTA VISTA AÉREA ===== */
+
+.planta{
+  position: relative;
+ z-index: 0;
+  width: 7500px;   /* más grande que todo tu laminador */
+  height: 2500px;
+  overflow: visible;
+  margin: 20px auto;
+}
+.escena{
+  transform: translateY(1100px);
+}
+
+body{
+  overflow-x: auto;
+}
+/* EQUIPOS GENERALES */
+.equipo {
+  position: absolute;
+  cursor: pointer;
+}
+.bloque-param{
+  margin-top:10px;
+}
+
+.param{
+  padding:4px 8px;
+  border-radius:4px;
+  margin:2px 0;
+}
+
+
+.panel-contenido{
+  overflow:hidden;
+}
+.param-grupo{
+  background: rgba(255,255,255,0.04);
+  border-radius:12px;
+  padding:14px;
+
+  border:1px solid rgba(255,255,255,0.08);
+
+  transition:0.2s;
+}
+
+.param-grupo:hover{
+  transform:translateY(-3px);
+  box-shadow:0 10px 25px rgba(0,0,0,0.4);
+}
+#contenedor-parametros{
+  padding-bottom:10px;
+}
+#contenedor-parametros{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap:16px;
+
+  width:100%;
+}
+.param-grupo {
+  min-width: 280px;
+  max-width: 400px;
+  flex: none;
+
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(4px);
+  border-radius: 16px;
+  padding: 16px;
+
+  box-shadow: 
+    0 10px 25px rgba(0,0,0,0.3),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.param-item{
+  padding:6px 10px;
+  margin-bottom:4px;
+  border-radius:6px;
+}
+.panel-contenido{
+  align-content:start;
+}
+
+.param-grupo:hover {
+  transform: translateY(-4px);
+  box-shadow: 
+    0 20px 40px rgba(0,0,0,0.4);
+}
+#contenedor-parametros::-webkit-scrollbar {
+  height: 6px;
+}
+
+#contenedor-parametros::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.2);
+  border-radius: 10px;
+}
+.param-grupo h4 {
+  margin-bottom: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.param-item.critico {
+  border-left: 3px solid #ff4d4d;
+}
+
+.param-item.controlado {
+  border-left: 3px solid #4cd964;
+}
+
+.param-item.producto {
+  border-left: 3px solid #ffd60a;
+}
+
+.param-item:hover {
+  background: rgba(255,255,255,0.08);
+  transform: translateX(4px);
+}
+
+.param-item.critico:hover {
+  box-shadow: 0 0 10px rgba(255, 77, 77, 0.4);
+}
+
+.param-item.controlado:hover {
+  box-shadow: 0 0 10px rgba(76, 217, 100, 0.4);
+}
+
+.param-item.producto:hover {
+  box-shadow: 0 0 10px rgba(255, 214, 10, 0.4);
+}
+
+h2 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+/* MESA DE CARGA */
+.mesa-carga {
+  position: relative;
+  z-index: 10; 
+  left: 39px;
+  top: 400px;
+  width: 160px;    
+  height: 160px;    
+  background: #1ac2ab;
+  border: 2px solid #fffb00;
+  border-radius: 4px;
+}
+
+/* TEXTO DEL EQUIPO */
+.mesa-carga::before {
+  content: "Mesa de Carga";
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);  
+  font-size: 12px;
+  font-weight: 600;
+  color: #333;
+  white-space: nowrap;
+}
+
+/* PALANQUILLAS EN MESA DE CARGA */
+.palanquillas {
+  position: absolute;
+  top: 10px;      /* 👈 más al centro de la mesa */
+  left: 8px;
+  right: 8px;
+  display: flex;
+  flex-direction: column;  
+  gap: 4px;                
+  align-items: center;
+  z-index: 20;
+  pointer-events: none;
+}
+.palanquillas .lote {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;           /* separación interna del grupo */
+  align-items: center;
+}
+.palanquillas span {
+  width: 80px;
+  height: 7px;
+  background: #8c8c8c;
+  border: 1px solid #000000;
+}
+
+
+/* CARRIL HORIZONTAL DESPLAZAMIENTO */
+.carril-entrada-horno {
+  position: absolute;
+
+  left: -108.5px;     /* sale del costado izquierdo */
+  bottom: 10px;    /* 👈 parte baja REAL */
+
+  width: 107px;
+  height: 20px;
+
+  background: #cfcfcf;
+  border: 1px solid #000;
+  z-index: 0;
+}
+.horno-recalentamiento {
+  position: absolute;   /* respecto a la planta */
+  left: 310px;
+  top: 240px;
+  width: 130px;
+  height: 200px;
+  background: linear-gradient(to bottom, #e6e6e6, #bdbdbd);
+  border: 1px solid #2c3e50;
+  border-radius: 6px;
+  z-index: 10;
+}
+.horno-recalentamiento::before {
+  content: "Horno Recalentamiento";
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);  /* 👈 centrado real */
+  font-size: 12px;
+  font-weight: 600;
+  color: #333;
+  white-space: nowrap;
+}
+.carril-salida-horno {
+  position: absolute;
+
+  right: -100px;    /* lado derecho */
+  top: 10px;       /* 👈 parte alta REAL */
+
+  width: 100px;
+  height: 20px;
+
+  background: #cfcfcf;
+  border: 1px solid #000;
+  z-index: 0;
+}
+/* PALANQUILLA EN CARRIL DE ENTRADA */
+.palanquilla-carril {
+  position: absolute;
+
+  /* centrada dentro del carril */
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  width: 80px;
+  height: 7px;
+
+  background: #8c8c8c;
+  border: 1px solid #000;
+  z-index: 20;
+
+  pointer-events: none;
+}
+
+.palanquilla-carril-salida {
+  position: absolute;
+
+  /* centrada dentro del carril */
+  left: 60px;
+  top: 10px;; 
+  bottom: 50px;
+  transform: translateY(-50%);
+
+  width: 80px;
+  height: 7px;
+
+  background: #f16f04;
+  border: 1px solid #000000;
+  z-index: 20;
+
+  pointer-events: none;
+}
+
+/* PALANQUILLAS DENTRO DEL HORNO */
+.palanquillas-horno {
+  position: absolute;
+
+  left: 25px;
+  right: 8px;
+  top: 30px;
+  bottom: 25px;
+  gap: 0px;
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: space-between;
+
+  pointer-events: none;
+}
+.palanquillas-horno .muy-fria {
+  background: #7f7f7f;
+}
+
+.palanquillas-horno .Calentando {
+  background: #b86a2c;
+}
+
+.palanquillas-horno .tibia {
+  background: #e07a2a;
+}
+
+.palanquillas-horno .media {
+  background: #ff8a00;
+}
+
+.palanquillas-horno .caliente {
+  background: #ff6a00;
+}
+/* Base común */
+.palanquillas-horno span {
+  width: 80px;
+  height: 7px;
+  border: 1px solid #000000;
+}
+
+
+.mesa-bastidor {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  width: 55px;
+  height: 160px;
+
+  background: #5a5a5a;
+  border: 1px solid #2e2e2e;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+
+  pointer-events: none;
+}
+
+.mesa-bastidor .riel {
+  width: 85%;
+  height: 6px;
+  margin: 0 auto;
+  background: #1a1a1a;
+  border-radius: 2px;
+}
+
+.palanquillas {
+  position: absolute;
+  inset: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+
+/* BASTIDOR INTERNO DEL HORNO (VERTICAL) */
+.horno-bastidor-vertical {
+  position: absolute;
+
+  left: 5px;
+  right: 5px;
+  top: 10px;
+  bottom: 10px;
+
+  background: #5a5a5a;          /* gris oscuro */
+  border: 1px solid #2e2e2e;
+  border-radius: 4px;
+
+  display: flex;
+  justify-content: center;
+
+    gap: 20px;  
+  z-index: 0;
+  pointer-events: none;
+}
+.horno-bastidor-vertical .riel-vertical {
+  width: 8px;
+  background: #1a1a1a;   /* negro */
+  border-radius: 5px;
+}
+
+/* LLAMAS DEL HORNO */
+.llamas-horno {
+  position: absolute;
+
+  left: 8px;
+  right: 8px;
+  top: 30px;
+  bottom: 30px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+
+  z-index: 5;             /* debajo de palanquillas */
+  pointer-events: none;
+}
+
+/* FORMA DE LLAMA */
+.llamas-horno span {
+  width: 12px;
+  height: 20px;
+
+  background: radial-gradient(
+    circle at 50% 80%,
+    #ffb347,
+    #ff6a00,
+    #c0392b
+  );
+
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  opacity: 0.7;
+}
+
+@keyframes llama {
+  0%   { transform: scaleY(1);   opacity: 0.6; }
+  50%  { transform: scaleY(1.1); opacity: 0.8; }
+  100% { transform: scaleY(1);   opacity: 0.6; }
+}
+
+.llamas-horno span {
+  animation: llama 2.5s ease-in-out infinite;
+}
+
+/* LLAMAS DEL HORNO */
+.llamas-horno-Derecha {
+  position: absolute;
+
+  left: 110px;
+  right: 8px;
+  top: 30px;
+  bottom: 30px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+
+  z-index: 5;             /* debajo de palanquillas */
+  pointer-events: none;
+}
+
+/* FORMA DE LLAMA */
+.llamas-horno-Derecha span {
+  width: 12px;
+  height: 20px;
+
+  background: radial-gradient(
+    circle at 50% 80%,
+    #ffb347,
+    #ff6a00,
+    #c0392b
+  );
+
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  opacity: 0.7;
+}
+
+@keyframes llama {
+  0%   { transform: scaleY(1);   opacity: 0.6; }
+  50%  { transform: scaleY(1.1); opacity: 0.8; }
+  100% { transform: scaleY(1);   opacity: 0.6; }
+}
+
+.llamas-horno-Derecha span {
+  animation: llama 2.5s ease-in-out infinite;
+}
+
+
+/* RODILLOS VERTICALES DEL CARRIL DE ENTRADA */
+.rodillos-carril {
+  
+  position: relative;
+  inset: 0;
+
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+z-index:5;
+  pointer-events: none;
+}
+
+.rodillos-carril span {
+  width: 5px;     /* delgados */
+  height: 20px;   /* verticales */
+
+  background: #1a1a1a;
+  border-radius: 5px;
+  z-index:5;
+}
+
+
+
+
+/* ENCABEZADO */
+.encabezado {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: -10px 20px;
+  border-bottom: 2px solid #ddd;
+  margin-bottom: 20px;
+}
+
+/* LOGO */
+.logo-empresa {
+  height: 70px;      /* tamaño controlado */
+  width: auto;
+}
+
+/* TÍTULO */
+.encabezado .titulo h1 {
+  margin: 0;
+  font-size: 30px;
+
+}
+
+.encabezado .titulo p {
+  margin: 0;
+  font-size: 20px;
+  color: #555;
+}
+
+/* ARRASTRADOR 1 - JAULA */
+.arrastrador-1-jaula {
+  position: relative;
+
+  /* 👉 AJUSTA SOLO ESTO UNA VEZ */
+  left: 541px;   /* justo donde termina el carril */
+  top: 80px;
+
+  width: 40px;
+  height: 36px;
+
+  border: 0px solid #2b2b2b;
+  background: transparent;
+  border-radius: 0px;
+
+  z-index: 6;
+}
+.arrastrador-1-jaula .jaula {
+  position: absolute;
+  inset: 6px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  z-index: 2;
+  pointer-events: none;
+}
+
+
+.arrastrador-1-jaula .jaula span {
+  width: 4px;
+  height: 100%;
+  background: #4a4a4a;
+  border-radius: 2px;
+}
+
+.equipo.horno-recalentamiento {
+  pointer-events: auto;
+}
+
+.arrastrador-1-jaula {
+  position: relative;   /* 👈 OBLIGATORIO */
+}
+/* TEXTO DEL ARRASTRADOR 1 */
+.arrastrador-1-jaula::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background: #e0e0e0;
+  border: 2px solid #2b2b2b;
+
+  /* 👇 forma tipo reloj de arena */
+   clip-path: polygon(
+    0% 0%,      100% 0%,      /* borde superior */
+    100% 25%,   60% 50%,      /* estrechamiento derecha */
+    100% 75%,   100% 100%,    /* borde derecho */
+    0% 100%,    0% 75%,       /* borde inferior */
+    40% 50%,    0% 25%        /* estrechamiento izquierda */
+  );
+
+  border-radius: 4px;
+  z-index: 1;
+}
+
+
+
+
+.modulo-transporte-salida {
+  position: absolute;
+
+  left: 300px;   /* donde empieza el carril */
+  top: 250px;    /* eje real del proceso */
+
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+
+.palanquilla-arrastre {
+  position: absolute;
+
+  top: 50%;
+  transform: translateY(-50%);
+
+  width: 80px;
+  height: 7px;
+
+  background: #f16f04;
+  border: 1px solid #000;
+
+  pointer-events: none;
+}
+/* separaciones entre palanquillas */
+
+.carril-salida-horno .palanquilla-arrastre:nth-child(2) {
+  left: 75px;
+}
+
+.carril-salida-horno .palanquilla-arrastre:nth-child(3) {
+  left: 80px;
+  top: 6px;
+
+  transform: none;   /* 👈 CLAVE */
+  z-index: 10;        /* 👈 MÁS BAJO */
+}
+
+.carril-salida-horno .palanquilla-arrastre:nth-child(4) {
+  left:-50px;
+}
+/* RODILLO DE CAPTURA SOBRE PALANQUILLA */
+.rodillo-captura {
+  position: absolute;
+
+  width: 7px;
+  height: 26px;
+
+  background: #1a1a1a;
+  border-radius: 4px;
+
+  left: 118px;       /* misma zona que la última palanquilla */
+  top: 50%;
+  transform: translateY(-50%);
+
+  z-index: 20;        /* por encima de la palanquilla */
+  pointer-events: none;
+}
+
+/* NOMBRE DEL EQUIPO (ARRASTRADOR) */
+/* ===== ROTULO ESTÁNDAR DE EQUIPOS ===== */
+.nombre-equipo {
+  position: absolute;
+
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  font-size: 12px;
+  font-weight: 600;
+  color: #333;
+  white-space: nowrap;
+
+  pointer-events: none;
+  z-index: 20;
+}
+
+/* CARRIL ARRASTRADOR → DESBASTE */
+.carril-arrastrador-desbaste {
+  position: absolute;
+
+  left: 570px;   /* parte derecha del arrastrador */
+  top: 251px;    /* mismo eje del proceso */
+
+  width: 100px;
+  height: 20px;
+
+  background: #cfcfcf;
+  border: 1px solid #000;
+
+  z-index: 1;
+}
+
+.escalera-aerea {
+  position: absolute;
+  left: 560px;
+  top: 250px;
+
+  display: flex;
+  align-items: center;
+  gap: 3px;
+
+  transform: rotate(90deg); /* si la necesitas rotada */
+  transform-origin: center;
+  z-index: 2;
+}
+
+/* BLOQUES LATERALES */
+.bloque-extremo {
+  width: 8px;
+  height: 18px;
+
+  background: #1ac2ab;   /* mismo color mesa */
+  border: 1px solid #fffb00;
+}
+
+/* PASARELA CENTRAL */
+.pasarela-central {
+  width: 40px;
+  height: 18px;
+
+  background: #1ac2ab;   /* mismo color mesa */
+  border: 1px solid #fffb00;
+}
+
+/* Desbastadores */
+.desbastador {
+  position: absolute;
+  width: 50px;
+  height: 90px;
+  background: #c0392b;
+  border: 2px solid #000;
+  border-radius: 4px;
+}
+/* RODILLOS */
+.rodillo {
+  position: absolute;
+  top: 39%;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 3;
+   
+}
+
+.rodillo .superior{
+    width: 30px;
+  height: 30px;
+  background: #bdbdbd;
+ border-radius: 6px 6px 0 0;
+   box-sizing: border-box;
+  border-left: 2px solid #000;
+  border-right: 2px solid #000;
+}
+.rodillo .inferior {
+  width: 30px;
+  height: 30px;
+  background: #bdbdbd;
+    border-radius: 0 0 6px 6px;
+   box-sizing: border-box;
+  border-left: 2px solid #000;
+  border-right: 2px solid #000;
+}
+
+.rodillo .canal {
+  width: 27px;
+  height: 20px;
+  background: #bdbdbd;
+ 
+  border: none;   
+   clip-path: polygon(
+    0% 0%,
+    100% 0%,
+    85% 50%,   /* 👈 entra hacia adentro */
+    100% 100%,
+    0% 100%,
+    15% 50%    /* 👈 entra hacia adentro */
+  );
+
+  box-shadow:
+    inset 0 0 0 1.2px rgba(0,0,0,0.7),
+    inset 0 3px 4px rgba(0,0,0,0.5);
+ 
+}
+
+.rodillo .canal::before {
+  content: "";
+  position: absolute;
+  inset: -1px; /* grosor del borde */
+
+  background: transparent;
+  border: 1.5px solid #000;
+
+  clip-path: inherit;   /* 👈 MISMA FORMA */
+  pointer-events: none;
+}
+
+.etapa-1 .rodillo .canal {
+  height: 12px;
+}
+
+/* D3H */
+.etapa-3 .rodillo .canal {
+  height: 9px;
+}
+
+/* D5H */
+.etapa-5 .rodillo .canal {
+  height: 8px;
+}
+/* D1H - canal base */
+.desbastador-d1h .rodillo .canal {
+  width: 0px;
+}
+
+/* D3H - canal más angosto */
+.desbastador-d3h .rodillo .canal {
+  width: 16px;
+}
+
+/* D5H - canal aún más angosto */
+.desbastador-d5h .rodillo .canal {
+  width: 12px;
+}
+
+/* GUIAS */
+.guia-entrada {
+  position: absolute;
+  left: -10px;
+  top: 56%;
+  width: 30px;
+  height: 20px;
+}
+
+.guia-entrada .superior,
+.guia-entrada .inferior {
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: #00aeff;
+}
+
+.guia-entrada .superior {
+  top: 0;
+  transform: rotate(20deg);
+}
+
+.guia-entrada .inferior {
+  bottom: 0;
+  transform: rotate(-20deg);
+}
+/* BARRA LAMINADA */
+
+.barra-laminacion {
+  position: absolute;
+
+  left: 642px;     /* donde empieza D1 */
+  top: 258px;        /* eje único del proceso */
+
+  display: flex;
+  align-items: center;
+  gap: 0px;       /* 👈 AQUÍ están los espacios entre desbastadores */
+
+  pointer-events: none;
+  z-index: 2;
+}
+.tramo {
+  background: #ff6a00;
+  border: none;
+}
+
+/* antes del D1 */
+.tramo.etapa-1 {
+  width: 50px;
+  height: 7px;
+}
+
+/* después del D1 */
+.tramo.etapa-2 {
+  width: 65px;
+  height: 6px;
+}
+
+/* después del D3 */
+.tramo.etapa-3 {
+  width: 67px;
+  height: 5px;
+}
+.tramo.etapa-4 {
+  width: 70px;
+  height: 4px;
+}
+
+.tramo.etapa-5 {
+  width: 69px;
+  height: 3.5px;
+}
+.tramo.etapa-6 {
+  width: 68px;
+  height: 3.3px;
+}
+.tramo.etapa-final {
+  width: 1600px;
+  height: 3px;
+}
+
+
+.rodillo-vertical {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: 19px;
+  height: 19px;
+
+  background: radial-gradient(
+    circle at 30% 30%,
+    #e0e0e0,
+    #9e9e9e
+  );
+
+  border: 1px solid #000;
+  border-radius: 50%;
+  z-index: 5;
+}
+
+.rodillo-vertical.superior {
+  top: 39px;
+}
+
+.rodillo-vertical.inferior {
+  bottom: 8px;
+}
+
+.cizalla {
+  position: absolute;
+
+}
+
+.cizalla-cuerpo {
+  width: 70px;        /* 👈 más larga que el arrastrador */
+  height: 64.5px;
+
+  background: #f1c40f;   /* amarillo industrial */
+  border: 2px solid #000;
+  border-radius: 4px;
+
+  position: relative;
+}
+.rodillo-cizalla {
+  position: absolute;
+  left: 50%;
+  top: 54%;
+  transform: translate(-50%, -50%);
+
+  width: 55px;
+  height: 10px;
+
+  background: linear-gradient(
+    to right,
+    #000000 0%,
+    #9e9e9e 12%,
+    #9e9e9e 88%,
+    #000000 100%
+  );
+
+  border: 1px solid #000;
+  border-radius: 2px;
+
+  z-index: 3;
+}
+
+/* GUÍA DE ENTRADA CIZALLA */
+.guia-entrada-cizalla {
+  position: absolute;
+
+  left: -12px;           /* sale un poco antes del equipo */
+  top: 54%;
+  transform: translateY(-50%);
+
+  width: 18px;           /* más angosta que desbastador */
+  height: 18px;
+
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* líneas */
+.guia-entrada-cizalla .linea {
+  position: absolute;
+  width: 100%;
+  height: 2px;
+
+  background: #555;      /* hierro */
+}
+
+/* superior */
+.guia-entrada-cizalla .superior {
+  top: 0;
+  transform-origin: left center;
+  transform: rotate(12deg);   /* 👈 más suave */
+}
+
+/* inferior */
+.guia-entrada-cizalla .inferior {
+  bottom: 0;
+  transform-origin: left center;
+  transform: rotate(-12deg);
+}
+
+
+.dimensiones p {
+  margin: 2px 0;
+  font-size: 13px;
+}
+
+.dimension-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  min-width: unset;         /* 👈 por si hereda algo */
+  width: auto;              /* 👈 NO fijo aún */
+  padding: 0 4px;
+}
+.dimension-item .nombre {
+  font-size: 11px;
+  white-space: nowrap;      /* 👈 evita salto */
+}
+
+.dimension-item .valor {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.fila-nombres span {
+  font-weight: 600;
+  color: #444;
+  line-height: 1.5;      /* 👈 más compacto */
+}
+
+.fila-valores span {
+  padding: 1px 0;        /* 👈 menos alto */
+  border-top: 1px solid #ddd;
+  line-height: 1.5;      /* 👈 más compacto */
+}
+
+.dimensiones-horizontal {
+  display: flex;
+  gap: 10px;              /* 👈 controla qué tan juntos están */
+  margin-top: 6px;
+  flex-wrap: wrap;        /* por si la pantalla es chica */
+}
+
+.dimension-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 70px;        /* 👈 evita que se peguen */
+}
+
+.dimension-nombre {
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.1;
+}
+
+.dimension-valor {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+
+
+.canal-guia {
+  position: absolute;
+  width: 50px;              /* 👈 ancho FINAL */
+  height: 10px;
+  background: linear-gradient(to bottom, #8f8f8f, #6b6b6b);
+  border: 2px solid #000;
+  z-index: 5;
+  overflow:hidden;
+}
+
+
+
+.canal-guia::before {
+  content: "";
+  position: absolute;
+  left: -25px;
+  top: -1.5px;
+
+  width: 36px;
+  height: 100%;
+
+  background: linear-gradient(
+    to bottom,
+    #8a8a8a,
+    #5a5a5a
+  );
+
+  border-top: 2px solid #000;
+  border-bottom: 2px solid #000;
+  border-left: 2px solid #000;
+
+  clip-path: polygon(
+     0% 0%,
+    100% 25%,
+    100% 75%,
+    0% 100%
+  );
+}
+
+
+/* ===== FORMADOR DE LAZOS MEJORADO ===== */
+/* ===== FORMADOR DE LAZOS SIMPLIFICADO ===== */
+.formador-lazo {
+  position: absolute;
+  left: 1518px;
+  top: 215px;
+  width: 120px;
+  height: 80px;
+  z-index: 5;
+  pointer-events: auto;
+}
+
+
+/* CAJA DE LAZO MEJORADA */
+.caja-lazo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 60px;
+  background: linear-gradient(135deg, #b8b8b8, #7a7a7a);
+  border: 2px solid #333;
+  border-radius: 8px;
+  z-index: 4;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+  overflow: hidden; /* asegura que .omega no se salga del contenedor */
+}
+
+
+/* OMEGA ANIMADO */
+.omega{
+  position:absolute;
+  left:0;
+  bottom:10px;
+  width:100%;
+  height:40px;
+}
+
+.omega path{
+  fill:none;
+  stroke:#ff6a00;
+  stroke-width:5;
+  stroke-linecap:round;
+
+  filter: drop-shadow(0 0 0 #000) drop-shadow(1px 0 0 #000) drop-shadow(-1px 0 0 #000) drop-shadow(0 1px 0 #000) drop-shadow(0 -1px 0 #000);
+
+  animation: onda-cuerda 5s ease-in-out infinite;
+}
+@keyframes onda-cuerda {
+
+/* barra plana */
+0%{
+d: path("M0 42 Q55 42 110 42");
+}
+
+/* subida rápida */
+15%{
+d: path("M0 42 Q55 -2 110 42");
+}
+
+/* pequeña oscilación */
+30%{
+d: path("M0 42 Q55 2 110 42");
+}
+
+45%{
+d: path("M0 42 Q55 -1 110 42");
+}
+
+/* se mantiene arriba */
+60%{
+d: path("M0 42 Q55 0 110 42");
+}
+
+/* empieza a bajar */
+80%{
+d: path("M0 42 Q55 20 110 42");
+}
+
+/* vuelve plano */
+100%{
+d: path("M0 42 Q55 42 110 42");
+}
+
+}
+
+/* ETIQUETA DEL EQUIPO */
+.formador-lazo .nombre-equipo {
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-weight: bold;
+  font-size: 13px;
+  white-space: nowrap;
+  z-index: 10;
+}
+
+.formador-lazo:nth-of-type(2) path{
+animation-delay:0.5s;
+}
+
+.formador-lazo:nth-of-type(3) path{
+animation-delay:1s;
+}
+
+.formador-lazo:nth-of-type(4) path{
+animation-delay:1.5s;
+}
+
+
+.semicirculo{
+  position:absolute;
+
+  left:2515px;
+  top:228px;
+
+  width:60px;
+  height:60px;
+
+  border:10px solid #f1c40f;
+  border-bottom:none;
+
+  border-radius:50px 50px 0 0;
+
+  transform:rotate(90deg);
+
+  background:transparent;
+}
+
+.f1 .omega path{ animation-delay:0s; }
+
+.f2 .omega path{ animation-delay:0.6s; }
+
+.f3 .omega path{ animation-delay:1.2s; }
+
+.f4 .omega path{ animation-delay:1.8s; }
+
+.f5 .omega path{ animation-delay:2.4s; }
+
+.f6 .omega path{ animation-delay:3.0s; }
+
+.f7 .omega path{ animation-delay:3.6s; }
+/* GUÍA FIJA DEL DESVIADOR */
+.guia-desviador{
+  position:absolute;
+
+  left:2620px;
+  top:255px;
+
+  width:50px;   /* largo */
+  height:10px;
+
+  background:linear-gradient(to bottom,#8f8f8f,#6b6b6b);
+  border:2px solid #000;
+
+  z-index:5;
+}
+.brazo-desviador{
+  position:absolute;
+
+  left:2675px;
+  top:255px;
+
+  width:50px;
+  height:10px;
+
+  background:linear-gradient(to bottom,#8f8f8f,#6b6b6b);
+  border:2px solid #000;
+ overflow:visible; 
+  transform-origin:left center;
+  transform:rotate(-25deg);
+
+  animation: mover-desviador 10s ease-in-out infinite;
+
+  z-index:6;
+}
+.brazo-desviador::before{
+  content:"";
+  position:absolute;
+
+  left:-6px;
+  top:50%;
+  transform:translateY(-50%);
+
+  width:12px;
+  height:12px;
+
+  background:#444;
+  border:2px solid #000;
+  border-radius:50%;
+}
+@keyframes mover-desviador {
+
+  0%{
+    transform: rotate(35deg); /* arriba */
+  }
+
+  50%{
+    transform: rotate(0deg);  /* abajo */
+  }
+
+  100%{
+    transform: rotate(35deg); /* vuelve arriba */
+  }
+
+}
+
+.tubo-guia{
+  width:30px;
+  height:10px;
+
+  border-radius:4px;
+  border:2px solid #000;
+z-index:4;
+  background:linear-gradient(
+    to bottom,
+    #5e5e5e 0%,
+    #cfcfcf 50%,
+    #5e5e5e 100%
+  );
+
+  box-shadow:
+    inset 0 2px 3px rgba(0,0,0,0.6),
+    inset 0 -2px 3px rgba(0,0,0,0.6);
+}
+
+.tunel-tubos{
+  position: absolute;
+  display: flex;
+  z-index:4;
+  gap: 3px;     /* separación entre tubos */
+}
+
+.tunel-recto{
+  left: 2730px;
+  top: 255px;
+  z-index:4;
+}
+
+.tunel-diagonal{
+  position:absolute;
+
+  left:2720px;
+  top:285px;
+z-index:4;
+  display:flex;
+  align-items:center;
+  gap:6px;
+
+  transform:rotate(35deg);
+  transform-origin:left center;
+}
+
+.tunel-inferior{
+  left: 3145px;
+  top: 580px;
+  z-index:4;
+}
+
+.tubo-azul-grande{
+  width:30px;      /* largo del tubo */
+  height:14px;     /* ancho */
+
+  border-radius:4px;
+  border:2px solid #000;
+z-index:4;
+  background:linear-gradient(
+    to bottom,
+    #0a3d7a,
+    #6ec1ff,
+    #0a3d7a
+  );
+}
+
+.tubo-azul-chico{
+  width:30px;      /* mismo largo */
+  height:8px;      /* más delgado */
+
+  border-radius:4px;
+  border:2px solid #000;
+z-index:4;
+  background:linear-gradient(
+    to bottom,
+    #0a3d7a,
+    #6ec1ff,
+    #0a3d7a
+  );
+}
+
+.pasarela-cruce{
+  position:absolute;
+
+  left:3250px;   /* ajustar */
+  top:200px;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+
+  z-index:10;
+}
+
+.pasarela{
+  width:32px;
+  height:370px;
+
+  background:#1ac2ab;
+  border:2px solid #fffb00;
+}
+.escalera{
+  width:70px;        /* más larga */
+  height:25px;
+
+  background:
+    repeating-linear-gradient(
+      to right,
+      #1ac2ab 0px,
+      #1ac2ab 6px,
+      #0f8f7d 6px,
+      #0f8f7d 8px
+    );
+
+  border:2px solid #fffb00;
+}
+.escalera-arriba{
+  align-self:flex-end;
+  margin-right:-30px;   /* la hace salir más */
+}
+
+.escalera-abajo{
+  align-self:flex-start;
+  margin-left:-30px;   /* la hace salir más */
+}
+
+.caja-agua{
+  position:absolute;
+
+  left:3390px;
+  top:195px;
+
+  width:515px;
+  height:90px;
+z-index:5;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+.caja-superior{
+
+  width:100%;
+  height:20px;
+
+  background:#1e90ff;
+  border:1px solid #000;
+
+
+  border:2px solid #000;
+
+  margin-bottom:-1px;
+}
+
+.tuberias{
+
+  width:100%;
+  display:flex;
+  justify-content:space-around;
+
+  margin-top:0px;
+}
+
+.tuberias span{
+
+  width:6px;
+  height:30px;
+
+  background:#a1a1a1;
+  border:1px solid #000;
+}
+
+.caja-inferior{
+
+  width:100%;
+  height:60px;
+
+  background:linear-gradient(
+    to bottom,
+    #6ed2ff,
+    #1e90ff,
+    #005bbb
+  );
+
+  border:2px solid #000;
+
+  margin-top:-10px; /* 👈 esto une las tuberías con la caja */
+}
+
+.tuberias-agua span{
+  width:6px;
+  height:22px;
+
+  background:#1e90ff;
+  border:1px solid #000;
+}
+
+.click-caja-agua4{
+  position:absolute;
+
+  left:2680px;   /* ajusta a tu mapa */
+  top:240px;
+
+  width:260px;   /* largo del túnel */
+  height:40px;
+
+  background:transparent;
+
+  cursor:pointer;
+
+  z-index:50;
+}
+
+.monobloque{
+  position:absolute;
+
+  left:3565px;
+  top:547px;
+
+  width:350px;
+  height:80px;
+
+  display:flex;
+
+  background:linear-gradient(
+    to bottom,
+    #6ed2ff,
+    #1e90ff,
+    #005bbb
+  );
+
+  border:2px solid #000;
+  border-radius:4px;
+}
+.corte{
+  position:absolute;
+
+  width:3px;
+  height:100%;
+
+  background:#003c8f;
+}
+
+.c1{ left:33%; }
+.c2{ left:66%; }
+
+.ojo{
+  width:12px;
+  height:12px;
+
+  border-radius:50%;
+
+  background:radial-gradient(
+    circle at 40% 40%,
+    #c8ecff,
+    #3fa9f5
+  );
+
+  border:2px solid #3a3a3a;
+
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.6);
+
+  pointer-events:none;
+}
+.o1{ left:16%; top:10px; }
+.o2{ left:16%; bottom:10px; }
+
+/* tapa 2 */
+.o3{ left:50%; top:20px; }
+.o4{ left:50%; bottom:20px; }
+
+/* tapa 3 */
+.o5{ left:84%; top:20px; }
+.o6{ left:84%; bottom:20px; }
+
+.tapa{
+  flex:1;
+
+  border-left:3px solid #003c8f;
+
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+
+  gap:24px;
+}
+
+/* GUÍA FIJA */
+.guia-desviador-monobloque{
+  position:absolute;
+
+  left:3918px;   /* salida del monobloque */
+  top:580px;
+
+  width:50px;
+  height:10px;
+
+  background:linear-gradient(to bottom,#8f8f8f,#6b6b6b);
+  border:2px solid #000;
+
+  z-index:5;
+}
+
+/* BRAZO MÓVIL */
+.brazo-desviador-monobloque{
+  position:absolute;
+
+  left:3972px;
+  top:580px;
+
+  width:50px;
+  height:10px;
+
+  background:linear-gradient(to bottom,#8f8f8f,#6b6b6b);
+  border:2px solid #000;
+
+  transform-origin:left center;
+  transform:rotate(-30deg);
+
+  animation: mover-desviador-monobloque 15s ease-in-out infinite;
+
+  z-index:6;
+}
+
+/* PIVOTE */
+.brazo-desviador-monobloque::before{
+  content:"";
+  position:absolute;
+
+  left:-6px;
+  top:50%;
+  transform:translateY(-50%);
+
+  width:12px;
+  height:12px;
+
+  background:#444;
+  border:2px solid #000;
+  border-radius:50%;
+}
+
+/* ANIMACIÓN */
+@keyframes mover-desviador-monobloque{
+
+  0%{
+    transform:rotate(-30deg);   /* hacia arriba */
+  }
+
+  50%{
+    transform:rotate(0deg);    /* hacia abajo */
+  }
+
+  100%{
+    transform:rotate(-30deg);
+  }
+
+}
+.canal-subida{
+  position:absolute;
+
+  left:4025px;   /* ajustar según tu desviador */
+  top:545px;
+
+  display:flex;
+  align-items:center;
+  gap:4px;
+
+  transform:rotate(-32deg);
+  transform-origin:left center;
+
+  z-index:6;
+}
+.caja-subida-agua{
+  position:relative;
+  width:98px;
+  height:30px;
+
+  background:linear-gradient(
+    to bottom,
+    #6ed2ff,
+    #1e90ff,
+    #005bbb
+  );
+
+  border:2px solid #000;
+  cursor:pointer;
+}
+
+/* nombre del equipo */
+.caja-subida-agua .nombre-equipo{
+  position:absolute;
+  top:-14px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:11px;
+  font-weight:600;
+  white-space:nowrap;
+}
+.caja-subida-caliente{
+  width:70px;
+  height:14px;
+
+  background:#e5ff00;
+
+  border:2px solid #000;
+}
+.caja-subida-caliente{
+  position:relative;
+  cursor:pointer;
+}
+.rodillo-subida{
+  width:20px;
+  height:10px;
+
+  background:#444;
+  border:2px solid #000;
+  border-radius:4px;
+}
+.caja-arrastrador{
+
+  width:50px;
+  height:18px;
+
+  background:#c0392b;
+
+  border:2px solid #000;
+  border-radius:2px;
+}
+.caja-agua-delgada{
+
+  width:45px;
+  height:16px;
+
+  background:linear-gradient(
+    to bottom,
+    #6ed2ff,
+    #1e90ff,
+    #005bbb
+  );
+
+  border:2px solid #000;
+}
+.canal-guia-delgado{
+
+  width:40px;
+  height:6px;
+
+  background:linear-gradient(
+    to bottom,
+    #8f8f8f,
+    #6b6b6b
+  );
+
+  border:2px solid #000;
+}
+
+.tunel-superior-continuacion{
+  position:absolute;
+
+  left:3925px;   /* ajustar hasta que conecte con la subida */
+  top:255px;     /* mismo eje del carril superior */
+
+  display:flex;
+  gap:3px;
+}
+
+
+/* GUÍA FIJA */
+.guia-desviador-union{
+  position:absolute;
+
+  left:4500px;   /* ajusta según tu mapa */
+  top:255px;     /* mismo eje del carril superior */
+
+  width:50px;
+  height:10px;
+
+  background:linear-gradient(to bottom,#8f8f8f,#6b6b6b);
+  border:2px solid #000;
+
+  z-index:5;
+}
+
+/* BRAZO */
+.brazo-desviador-union{
+  position:absolute;
+
+  left:4500px;
+  top:255px;
+
+  width:50px;
+  height:10px;
+
+  background:linear-gradient(to bottom,#8f8f8f,#6b6b6b);
+  border:2px solid #000;
+
+  transform-origin:left center;
+  transform:rotate(35deg);   /* apunta hacia el carril de subida */
+
+  animation:mover-desviador-union 10s ease-in-out infinite;
+
+  z-index:6;
+}
+
+/* PIVOTE */
+.brazo-desviador-union::before{
+  content:"";
+  position:absolute;
+
+  left:-6px;
+  top:50%;
+  transform:translateY(-50%);
+
+  width:12px;
+  height:12px;
+
+  background:#444;
+  border:2px solid #000;
+  border-radius:50%;
+}
+
+/* ANIMACIÓN */
+@keyframes mover-desviador-union{
+
+  0%{
+    transform:rotate(-215deg);   /* recibe del carril subida */
+  }
+
+  50%{
+    transform:rotate(-180deg);    /* recibe del carril superior */
+  }
+
+  100%{
+    transform:rotate(-215deg);
+  }
+
+}
+.carril-inferior-continuacion{
+  position:absolute;
+
+  left:4040px;   /* salida del desviador */
+  top:580px;     /* eje del carril inferior */
+
+  display:flex;
+  gap:3px;
+  z-index:3;
+}
+.tunel-superior-continuacion-2{
+  position:absolute;
+
+  left:4560px;   /* justo después del desviador */
+  top:255px;     /* mismo eje */
+
+  display:flex;
+  gap:3px;
+}
+.formador-espiras{
+  position:absolute;
+
+  left:5500px;   /* ajusta según donde termina tu carril */
+  top:550px;     /* eje del carril inferior */
+
+  width:200px;
+  height:80px;
+}
+
+.cuerpo-formador{
+
+  position:absolute;
+
+  width:120px;
+  height:70px;
+
+  background:linear-gradient(
+    to bottom,
+    #9e9e9e,
+    #6b6b6b
+  );
+
+  border:2px solid #000;
+}
+.canal-resorte{
+  position:absolute;
+
+  left:10px;
+  top:7px;
+
+  width:100px;
+  height:70%;
+
+  background:
+  repeating-linear-gradient(
+    80deg,
+    #ff6a00 0px,
+    #ff6a00 6px,
+    transparent 6px,
+    transparent 12px
+  );
+
+  border-radius:3px;
+}
+.canal-resorte{
+  box-shadow:
+  inset 0 3px 6px rgba(0,0,0,0.4),
+  inset 0 -3px 6px rgba(0,0,0,0.4);
+}
+
+.canal-resorte{
+  border-top:3px solid #444;
+  border-bottom:3px solid #444;
+}
+
+.stelmor{
+  position:absolute;
+
+  left: 5620px;
+  top: 537px;
+
+  width: 1200px;
+  height: 100px;
+
+  background:#111;
+
+  overflow:hidden; /* 🔥 clave */
+z-index: 2;
+  box-shadow:
+    inset 0 15px 20px rgba(0,0,0,0.9),
+    inset 0 -15px 20px rgba(0,0,0,0.9);
+}
+.stelmor{
+  position:absolute;
+  overflow:hidden; /* 🔥 importante */
+}
+.stelmor::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.9) 0%,
+    transparent 30%,
+    transparent 70%,
+    rgba(0,0,0,0.9) 100%
+  );
+
+  pointer-events:none;
+}
+.stelmor::after{
+  content:"";
+  position:absolute;
+
+  top:0;
+  left:0;
+
+  width:100%;
+  height:100%;
+
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.95) 0%,
+    rgba(0,0,0,0.6) 15%,
+    rgba(0,0,0,0) 35%,
+    rgba(0,0,0,0) 65%,
+    rgba(0,0,0,0.6) 85%,
+    rgba(0,0,0,0.95) 100%
+  );
+
+  pointer-events:none;
+}
+
+
+
+
+
+.rodillos-stelmor{
+  position:absolute;
+  top:0;
+  left:0;
+
+  width:100%;
+  height:100%;
+
+  background: repeating-linear-gradient(
+    to right,
+    #3a3a3a 0px,
+    #3a3a3a 6px,
+
+    #111 6px,
+    #777 8px,
+    #ddd 12px,
+    #777 16px,
+    #111 18px,
+
+    #3a3a3a 18px,
+    #3a3a3a 26px
+  );
+}
+
+
+.colectordeespiras{
+  position:absolute;
+
+  right:0px;
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  width: 120px;
+  height: 100px;
+
+  z-index: 20;
+}
+
+.cabezal-colector{
+  position:absolute;
+
+  right:0;
+  top:50%;
+
+  transform: translateY(-50%);
+
+  width:70px;
+  height:70px;
+
+  border-radius:50%;
+
+  background: radial-gradient(
+    circle,
+    #999 0%,
+    #555 40%,
+    #222 70%
+  );
+
+  border:3px solid #000;
+
+  box-shadow:
+    inset 0 0 10px rgba(0,0,0,0.8),
+    0 0 10px rgba(0,0,0,0.5);
+}
+.cabezal-colector{
+  box-shadow:
+    inset 0 0 10px rgba(0,0,0,0.8),
+    0 0 8px rgba(0,0,0,0.6),
+    0 0 20px rgba(0,0,0,0.3);
+}
+
+/* círculos concéntricos */
+.cabezal-colector::before{
+  content:"";
+  position:absolute;
+  inset:12px;
+
+  border-radius:50%;
+  border:2px solid #bbb;
+}
+
+.cabezal-colector::after{
+  content:"";
+  position:absolute;
+  inset:26px;
+
+  border-radius:50%;
+  border:2px solid #888;
+}
+
+/* ========================= */
+/* 🔵 CONTENEDOR ESPIRAS */
+/* ========================= */
+.espiras-stelmor{
+  position:absolute;
+  bottom:0;
+  left:0;
+
+  width:100%;
+  height:100px;
+
+   /* 👈 DEBUG */
+  z-index:9999;
+}
+
+
+/* ========================= */
+/* 🟠 ESPIRA EN STELMOR */
+/* ========================= */
+.espira{
+  width: 80px;
+  height: 80px;
+
+  border-radius: 50%;
+  position:absolute;
+
+  background: radial-gradient(
+    circle,
+    transparent 55%,
+    var(--color, #ff6a00) 57%,
+    var(--color, #ff6a00) 65%,
+    transparent 67%
+  );
+
+  box-shadow:
+    0 0 10px var(--color, #ff6a00),
+    inset 0 0 6px rgba(0,0,0,0.6);
+}
+
+
+/* ========================= */
+/* 🔘 ESPIRA EN CABEZAL */
+/* ========================= */
+.espira-cabezal{
+  position:absolute;
+
+  top:50%;
+  right: -42.5px;
+
+  transform: translate(-50%, -50%);
+
+  width:80px;
+  height:80px;
+
+  border-radius:50%;
+
+  background: radial-gradient(
+    circle,
+    transparent 55%,
+    #ff6a00 57%,
+    #ff6a00 65%,
+    transparent 67%
+  );
+
+  box-shadow:
+    0 0 10px rgba(255,100,0,0.6),
+    inset 0 0 6px rgba(0,0,0,0.6);
+
+  animation: pulso 0.6s infinite alternate;
+}
+
+
+/* ========================= */
+/* ✨ ANIMACIÓN */
+/* ========================= */
+@keyframes pulso{
+  from{ transform: translate(-50%, -50%) scale(1); }
+  to{ transform: translate(-50%, -50%) scale(1.05); }
+}
+/* movimiento continuo */
+@keyframes moverEspiras{
+  from{
+    transform: translateX(0);
+  }
+  to{
+    transform: translateX(1000px); /* 👈 ajustá según tu layout */
+  }
+}
+
+.espira-nueva{
+  position:absolute;
+  width:16px;
+  height:16px;
+  border-radius:50%;
+  background:#00ffcc;
+
+  transform:translate(0,0);
+  z-index:999;
+}
+
+.boton-pdf{
+
+display:inline-block;
+
+margin-top:8px;
+
+padding:6px 10px;
+
+background:#1b395a;
+
+color:white;
+
+text-decoration:none;
+
+border-radius:4px;
+
+font-size:12px;
+
+}
+
+.boton-pdf:hover{
+background:#2c5a8a;
+}
+
+
+
+
+.panel-tabs{
+  display:flex;
+  gap:10px;
+}
+
+.panel-tabs button{
+  background:none;
+  border:none;
+
+  color: var(--text-soft);
+  font-size:13px;
+
+  padding:6px 10px;
+
+  border-bottom:2px solid transparent;
+
+  cursor:pointer;
+}
+
+/* hover */
+
+.panel-tabs button:hover{
+  background:#e9eef3;
+}
+
+/* pestaña activa */
+
+.panel-tabs button.activa{
+
+  border-bottom:3px solid #3498db;
+  color:#000;
+
+}
+.producto-proceso{
+  margin-bottom:15px;
+  padding:10px;
+  background:#f2f2f2;
+  border-radius:6px;
+}
+
+.param-grid{
+  display:grid;
+  grid-template-columns: repeat(4, minmax(220px,1fr));
+  gap:16px;
+  align-items:start;
+}
+
+.grupo-param{
+  background:white;
+  border-radius:6px;
+  padding:12px;
+  box-shadow:0 2px 6px rgba(0,0,0,0.15);
+}
+
+.param{
+  font-size:13px;
+  padding:4px 0;
+  border-bottom:1px solid #eee;
+}
+
+.param:last-child{
+  border-bottom:none;
+}
+
+.controlado h4{color:#2e8b57;}
+.Ruido h4{color:#caa000;}
+.critico h4{color:#c0392b;}
+.producto h4{color:#1f4e79;}
+
+
+.jaula-delimitador{
+
+  position:absolute;
+  left:4790px;
+  top:133px;
+
+  width:310px;
+  height:230px;
+
+  border:6px solid #0048ff;
+  border-radius:6px;
+
+  background:transparent;
+  z-index:4;
+
+}
+
+
+/* GUIA DESVIADORA (DESVIADOR REAL) */
+
+.canal-jaula{
+
+  position:absolute;
+
+  left:10px;
+  top:51.5%;
+
+}
+
+
+/* movimiento del desviador SOLO en modo doble */
+
+.modo-doble .canal-jaula{
+
+  animation:mover-guia-cvs7 3s ease-in-out infinite;
+
+}
+
+@keyframes mover-guia-cvs7{
+
+  0%{ transform:translateY(-4px); }
+
+  50%{ transform:translateY(4px); }
+
+  100%{ transform:translateY(-4px); }
+
+}
+
+
+/* cuando es modo unitario se detiene */
+
+.modo-unitario .canal-jaula{
+
+  animation:none;
+
+}
+
+
+
+/* CIZALLA */
+
+.cizalla-cvs7{
+
+  position:absolute;
+
+  left:70px;
+  top:38.5%;
+ z-index:12;
+}
+
+.cizalla-cvs7 .cizalla-cuerpo{
+  background:#005bbb;
+}
+
+.cizalla-cvs7 .rodillo-cizalla{
+
+  width:55px;
+  height:20px;
+
+  background:linear-gradient(
+    to right,
+    #000000 0%,
+    #f1c40f 12%,
+    #f1c40f 88%,
+    #000000 100%
+  );
+
+}
+
+
+/* GUIA ENTRADA */
+
+.guia-entrada-cizalla{
+  width:18px;
+  height:18px;
+}
+
+.cizalla-cvs7 .guia-entrada-cizalla{
+  width:28px;
+  height:28px;
+  left:-16px;
+}
+
+
+
+/* CANALES DOBLES */
+
+.canales-cvs7{
+
+  position:absolute;
+
+  left:180px;
+  top:51.5%;
+ z-index:12;
+}
+
+.canal-cvs7{
+  position:absolute;
+  width:120px;
+   z-index:12;
+}
+
+.canal-superior{
+  top:-6px;
+  
+}
+
+.canal-inferior{
+  top:10px;
+}
+.canal-superior,
+.canal-inferior{
+position:absolute;
+  transition: transform 0.8s ease, opacity 0.6s ease;
+ z-index:12;
+}
+.salida-final{
+  position:absolute;
+  z-index:6;
+}
+
+/* canales */
+.canales-cvs7,
+.canal-cvs7,
+.canal-superior,
+.canal-inferior,
+.canal-unitario{
+  position:absolute;
+  z-index:12;
+}
+
+/* CANAL UNITARIO */
+
+.canal-unitario{
+
+position:absolute;
+
+left:180px;
+top:25%;
+
+width:120px;
+
+opacity:0.2;
+z-index:10;
+transition: transform 0.8s ease, opacity 0.6s ease;
+
+}
+
+
+/* animación del canal unitario */
+
+.modo-unitario .canal-unitario{
+
+  transform:translateY(60px);
+  opacity:1;
+
+}
+
+@keyframes bajar-unitario{
+
+  from{ transform:translateY(30px); }
+
+  to{ transform:translateY(60px); }
+
+}
+.modo-unitario .canal-unitario .rectangulo-canal{
+
+  animation:balanceo-canal 3s ease-in-out infinite alternate;
+
+}
+
+
+/* desactivación de canales dobles */
+
+.modo-unitario .canal-superior,
+.modo-unitario .canal-inferior{
+
+  opacity:0.3;
+  transform:translateY(45px);
+
+}
+
+.selector-modo{
+
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  margin:10px 0;
+
+}
+
+.selector-modo button{
+
+  padding:5px 12px;
+
+  border:none;
+  border-radius:4px;
+
+  background:#1b395a;
+  color:white;
+
+  cursor:pointer;
+
+}
+
+.selector-modo button:hover{
+
+  background:#2c5a8a;
+
+}
+
+.canales-dobles-salida{
+
+  position:absolute;
+
+  left:5050px;   /* ajusta según donde termina la CVS7 */
+  top:255px;   /* MISMO eje que los canales principales */
+  z-index: 12;
+}
+
+.tunel-cvs7-superior{
+
+  position:absolute;
+
+  left:5110px;   /* ajusta según salida de la cizalla */
+  top:251px;     /* línea superior */
+z-index: 12;
+}
+
+.tunel-cvs7-inferior{
+
+  position:absolute;
+
+  left:5110px;
+  top:267px;     /* línea inferior */
+z-index: 12;
+}
+.frenacolas{
+
+position:absolute;
+
+left:5480px;
+top:240px;
+
+width:80px;
+height:70px;
+
+}
+
+.freno-cuerpo{
+
+width:100%;
+height:100%;
+
+background:#f1c40f;
+
+border:2px solid #000;
+
+border-radius:4px;
+
+}
+.rodillo-freno{
+
+width:50px;
+height:8px;
+z-index:10;
+background:linear-gradient(
+to right,
+#000 0%,
+#aaa 20%,
+#aaa 80%,
+#000 100%
+);
+
+border:1px solid #000;
+
+margin:8px auto;
+
+}
+
+.embudo-entrada{
+
+position:absolute;
+
+left:-25px;
+top:3px;
+
+width:36px;
+height:10px;
+
+background:linear-gradient(
+to bottom,
+#8a8a8a,
+#5a5a5a
+);
+
+border-top:2px solid #000;
+border-bottom:2px solid #000;
+border-left:2px solid #000;
+
+clip-path:polygon(
+0% 0%,
+100% 25%,
+100% 75%,
+0% 100%
+);
+
+}
+
+.rectangulo-canal{
+
+position:absolute;
+
+left:0;
+top:0;
+
+width:50px;
+height:10px;
+
+background:linear-gradient(to bottom,#8f8f8f,#6b6b6b);
+border:2px solid #000;
+
+transform-origin:right center;
+
+}
+
+
+.modo-unitario .rectangulo-canal{
+
+animation:balanceo-canal 1s ease-in-out infinite alternate;
+
+}
+.cuerpo-canal{
+
+position:absolute;
+
+left:0;
+top:3px;
+
+width:120px;
+height:10px;
+
+background:linear-gradient(to bottom,#8f8f8f,#6b6b6b);
+border:2px solid #000;
+
+transform-origin:left center;
+transition: transform 0.8s ease-in-out;
+
+}
+
+@keyframes balanceo-canal{
+
+0%{
+transform:rotate(-5deg);
+}
+
+100%{
+transform:rotate(5deg);
+}
+
+}
+
+.modo-unitario .cuerpo-canal{
+
+animation:balanceo-canal 2s ease-in-out infinite alternate;
+
+}
+.canal-unitario .canal-guia::before{
+display:none;
+}
+
+/* ============================= */
+/* PARRILLA DE ENFRIAMIENTO */
+/* ============================= */
+
+.parrilla-enfriamiento{
+
+position:absolute;
+
+left:5580px;
+top:-130px;
+
+width:950px;
+height:430px;
+
+background:#8b8b8b;
+
+border:3px solid #000;
+ z-index:1;
+overflow:visible;
+
+}
+
+
+/* ============================= */
+/* RAKES (DIENTES) */
+/* ============================= */
+
+.rake{
+
+width:16px;
+height:99%;
+ z-index:0;
+/* zigzag vertical */
+
+background:
+linear-gradient(-135deg,#000 50%,transparent 50%) left,
+linear-gradient(135deg,#000 50%,transparent 50%) left;
+background-size:12px 24px;
+background-repeat:repeat-y;
+border-left:3px solid #000;
+
+}
+
+.rake::before{
+content:"";
+position:absolute;
+left:-4px;
+top:0;
+width:4px;
+height:100%;
+
+background:
+repeating-linear-gradient(
+180deg,
+transparent 0px,
+transparent 14px,
+#000 14px,
+#000 16px
+);
+
+clip-path:polygon(
+0% 0%,
+100% 50%,
+0% 100%
+);
+
+}
+
+
+/* ============================= */
+/* FILAS DE DIENTES */
+/* ============================= */
+
+/* impar fijo */
+
+.rake1{
+
+left:8px;
+
+}
+
+/* par movil */
+
+.rake2{
+
+left:16px;
+
+animation:rake-movimiento 2s linear infinite;
+
+}
+
+/* impar fijo */
+
+.rake3{
+
+left:24px;
+
+}
+
+
+/* ============================= */
+/* ANIMACION WALKING BEAM */
+/* ============================= */
+
+@keyframes caminar{
+
+0%{ transform:translate(0px,0px); }
+
+25%{ transform:translate(0px,-15px); }
+
+50%{ transform:translate(2px,-15px); }
+
+75%{ transform:translate(2px,0px); }
+
+100%{ transform:translate(0px,0px); }
+
+}
+
+.movil{
+
+animation:caminar 2s linear infinite;
+
+}
+.parrilla-grid{
+
+position:absolute;
+
+left:0;
+top:0;
+
+width:100%;
+height:100%;
+
+display:flex;
+
+gap:8px;
+
+padding:6px;
+
+}
+
+.manto{
+
+position:absolute;
+
+left:4300px;
+top:-345px;
+
+width:2233px;
+height:100px;
+
+background:
+repeating-linear-gradient(
+to right,
+
+/* █ BASE */
+#3a3a3a 0px,
+#3a3a3a 16px,
+
+/* 👇 RODILLO (8 con volumen) */
+#111 16px,
+#888 18px,
+#ddd 20px,
+#888 22px,
+#111 24px,
+
+/* vuelve base */
+#3a3a3a 24px,
+#3a3a3a 40px
+
+);
+
+border:2px solid #000;
+}
+
+
+.colector{
+
+position:absolute;
+
+left:5580px;
+top:-243px;
+
+width:953px;
+height:150px;
+
+/* 👇 BASE + CADENAS */
+background:
+
+/* cadenas (III) */
+repeating-linear-gradient(
+to right,
+
+transparent 0px,
+transparent 12px,
+
+#111 12px,
+#000000 14px,
+transparent 16px,
+
+transparent 16px,
+transparent 28px
+),
+
+/* base */
+#3a3a3a;
+
+border:2px solid #000;
+
+}
+
+.barra-colector{
+
+position:absolute;
+
+width:100%;
+height:4px;
+
+background:#ff6a00;
+
+top:60%;   /* ajusta según gusto */
+gap: 3;
+}
+.canal-superior,
+.canal-inferior,
+.canal-unitario{
+  position:absolute;
+  z-index:10;
+}
+
+.prod-gruesa .brazo-desviador{
+  animation:none;
+  transform:rotate(0deg); /* arriba */
+}
+
+.prod-gruesa .brazo-desviador-monobloque{
+  animation:none;
+  transform:rotate(0deg); /* plano */
+}
+
+.prod-gruesa .brazo-desviador-union{
+  animation:none;
+  transform:rotate(180deg);
+}
+
+.prod-delgada .brazo-desviador{
+  animation:none;
+  transform:rotate(35deg); /* abajo */
+}
+
+.prod-delgada .brazo-desviador-monobloque{
+  animation:none;
+  transform:rotate(-35deg); /* arriba */
+}
+
+.prod-delgada .brazo-desviador-union{
+  animation:none;
+  transform:rotate(145deg);
+}
+
+.prod-rollo .brazo-desviador{
+  animation:none;
+  transform:rotate(35deg); /* igual que delgada */
+}
+
+.prod-rollo .brazo-desviador-monobloque{
+  animation:none;
+  transform:rotate(0deg); /* abajo */
+}
+
+.prod-rollo .brazo-desviador{
+  animation:none;
+  transform:rotate(35deg); /* igual que delgada */
+}
+
+.prod-rollo .brazo-desviador-monobloque{
+  animation:none;
+  transform:rotate(0deg); /* abajo */
+}
+
+.selector-producto-mapa{
+  position:absolute;
+
+  left:3400px;   /* ajusta según tu caja N5 */
+  top:300px;     /* justo debajo */
+
+  display:flex;
+  gap:10px;
+
+  z-index:50;
+}
+
+/* BOTÓN BASE */
+.btn-prod{
+  padding:8px 14px;
+
+  font-size:13px;
+  font-weight:600;
+
+  border-radius:6px;
+  border:2px solid #000;
+
+  background:linear-gradient(
+    to bottom,
+    #e0e0e0,
+    #bdbdbd
+  );
+
+  color:#000;
+
+  cursor:pointer;
+
+  transition:all 0.2s ease;
+
+  box-shadow:
+    0 3px 0 #000,
+    inset 0 1px 2px rgba(255,255,255,0.6);
+}
+
+/* HOVER */
+.btn-prod:hover{
+  transform:translateY(-2px);
+
+  box-shadow:
+    0 5px 0 #000,
+    inset 0 1px 3px rgba(255,255,255,0.8);
+}
+
+/* CLICK */
+.btn-prod:active{
+  transform:translateY(2px);
+
+  box-shadow:
+    0 1px 0 #000,
+    inset 0 2px 4px rgba(0,0,0,0.6);
+}
+
+.planta.prod-gruesa .btn-prod:nth-child(1),
+.planta.prod-delgada .btn-prod:nth-child(2),
+.planta.prod-rollo .btn-prod:nth-child(3){
+
+  background:linear-gradient(
+    to bottom,
+    #1b395a,
+    #2c5a8a
+  );
+
+  color:white;
+
+  box-shadow:
+    0 2px 0 #000,
+    inset 0 2px 4px rgba(0,0,0,0.6);
+}
+.planta.prod-gruesa .btn-prod:nth-child(1),
+.planta.prod-delgada .btn-prod:nth-child(2),
+.planta.prod-rollo .btn-prod:nth-child(3){
+
+  background:linear-gradient(
+    to bottom,
+    #1b395a,
+    #2c5a8a
+  );
+
+  color:white;
+
+  box-shadow:
+    0 2px 0 #000,
+    inset 0 2px 4px rgba(0,0,0,0.6);
+}
+
+
+
+
+
+/* ========================= */
+/* ANIMACIÓN */
+/* ========================= */
+
+@keyframes crecer-barra{
+
+  0%{
+    transform: rotate(var(--angulo)) scaleX(0);
+    opacity:0;
+  }
+
+  10%{
+    opacity:1;
+  }
+
+  100%{
+    transform: rotate(var(--angulo)) scaleX(1);
+    opacity:1;
+  }
+
+}
+
+
+/* ========================= */
+/* PRODUCTOS */
+/* ========================= */
+
+/* 🟡 BARRA GRUESA (RECTA) */
+.prod-gruesa .barra{
+  --angulo:0deg;
+  --largo:2150px;
+
+  animation: crecer-barra 3s forwards;
+}
+
+
+/* 🔵 BARRA DELGADA (BAJA) */
+.prod-delgada .barra{
+  --angulo:35deg;
+  --largo:1400px;
+
+  animation: crecer-barra 3s forwards;
+}
+
+
+/* 🔴 ROLLO (MENOS ÁNGULO, MÁS LARGO) */
+.prod-rollo .barra{
+  --angulo:35deg;
+  --largo:1800px;
+
+  animation: crecer-barra 3s forwards;
+}
+
+
+/* ========================= */
+/* CAPAS (Z-INDEX) */
+/* ========================= */
+
+.caja-agua,
+.monobloque,
+.parrilla-enfriamiento{
+  z-index:4;
+}
+
+
+
+.canal-guia,
+.tubo-guia{
+  z-index:8;
+}
+
+.rodillos-carril span{
+  z-index:8;
+}
+
+.brazo-desviador{
+  z-index:8;
+}
+
+.barra{
+  position:absolute;
+  left:2675px;
+  top:260px;
+  z-index:2;
+}
+
+.barra-estatica{
+  position:absolute;
+  left:2675px;
+  top:260px;
+  z-index:2;
+}
+
+.seg{
+  position:absolute;
+  height:6px;
+  background:#ff6a00;
+
+  transform-origin:left center;
+  transform:scaleX(0);
+}
+@keyframes crecer{
+  to{
+    transform:scaleX(1);
+  }
+}
+.prod-gruesa .s1{
+  width:2140px;
+  animation:crecer 0.6s forwards;
+}
+
+
+.prod-gruesa .barra{
+  animation: crecer-gruesa 6s linear forwards;
+}
+
+@keyframes crecer-gruesa{
+  to{
+    width:2150px; /* 👈 AJUSTA hasta el desviador */
+  }
+}
+
+
+.barra-rollo{
+  position:absolute;
+  left:2675px;
+  top:260px;
+  z-index:2;
+}
+
+.barra-rollo div{
+  position:absolute;
+  height:6px;
+  background:#ff6a00;
+
+  transform-origin:left center;
+  transform:rotate(35deg) scaleX(0);
+}
+
+@keyframes crecer{
+  to{
+    transform:scaleX(1);
+  }
+}
+@keyframes crecer-diagonal{
+  from{
+    transform:rotate(35deg) scaleX(0);
+  }
+  to{
+    transform:rotate(35deg) scaleX(1);
+  }
+}
+/* 1️⃣ DIAGONAL DESDE EL DESVIADOR */
+.prod-rollo .r1{
+  width:570px;
+--angulo:35deg;
+  animation: crecer-diagonal 2s forwards;
+}
+
+
+/* 2️⃣ TRAMO INFERIOR RECTO */
+.prod-rollo .r2{
+  left:465px;     /* 👈 ajusta hasta donde termina la diagonal */
+  top:325px;      /* 👈 altura donde ya está abajo */
+
+  width:2360px;
+
+  animation: crecer 4s 2s forwards;
+}
+
+.barra-delgada{
+  position:absolute;
+  left:2675px;
+  top:260px;
+  z-index:2;
+}
+
+.barra-delgada div{
+  position:absolute;
+  height:6px;
+  background:#ff6a00;
+
+  transform-origin:left center;
+}
+
+
+.prod-delgada .d1{
+  --angulo:35deg;
+
+  width:570px;
+
+  animation: crecer-diagonal 0.6s forwards;
+}
+
+.prod-delgada .d2{
+  left:460px;
+  top:325px;
+
+  width:800px;
+
+  transform:scaleX(0);
+
+  animation: crecer 1s 0.6s forwards;
+}
+
+
+.prod-delgada .d3{
+  --angulo:-31deg;
+
+  left:1280px;
+  top:330px;
+
+  width:600px;
+
+  animation: crecer-diagonal 0.6s 1.6s forwards;
+}
+@keyframes crecer-diagonal{
+  from{
+    transform:rotate(var(--angulo)) scaleX(0);
+  }
+  to{
+    transform:rotate(var(--angulo)) scaleX(1);
+  }
+}
+.barra-delgada div{
+  transform-origin:left center;
+  transform:rotate(0deg) scaleX(0); /* 👈 BASE OBLIGATORIA */
+}
+.prod-delgada .d4{
+  left:1850px;   /* 👈 donde termina la subida */
+  top:0px;       /* 👈 altura superior (ajustar) */
+
+  width:330px;
+
+  transform:scaleX(0);
+
+  animation: crecer 1s 2.2s forwards;
+}
+
+/* ===================================== */
+/* 🔥 SALIDA DE BARRAS (NUEVA) */
+/* ===================================== */
+
+.salida-barras{
+  position:absolute;
+  z-index:6;
+}
+
+/* segmentos */
+.salida-barras div{
+  position:absolute;
+  width:120px;
+  height:6px;
+  background:#ff6a00;
+
+  transform-origin:left center;
+  transform:scaleX(0);
+  opacity:0;
+}
+
+/* ===================================== */
+/* 📍 ORIGEN SEGÚN MODO */
+/* ===================================== */
+
+/* DOBLE → cizalla */
+.planta.modo-doble .salida-barras{
+  left:5050px;
+  top:255px;
+}
+
+/* UNITARIO → desviador */
+.planta.modo-unitario .salida-barras{
+  left:4500px;
+  top:255px;
+}
+
+/* ===================================== */
+/* 🔀 CANALES */
+/* ===================================== */
+
+.planta.modo-doble .sb1{ top:0px; }
+.planta.modo-doble .sb2{ top:15px; }
+.planta.modo-doble .sb3{ top:0px; }
+
+.planta.modo-unitario .sb1,
+.planta.modo-unitario .sb2,
+.planta.modo-unitario .sb3{
+  top:0px;
+}
+
+/* ===================================== */
+/* ✨ ANIMACIONES */
+/* ===================================== */
+
+@keyframes nacer{
+  from{
+    transform:scaleX(0);
+    opacity:0;
+  }
+  to{
+    transform:scaleX(1);
+    opacity:1;
+  }
+}
+
+@keyframes mover{
+  from{
+    transform:translateX(0) scaleX(1);
+  }
+  to{
+    transform:translateX(1400px) scaleX(1);
+  }
+}
+
+/* ===================================== */
+/* ▶️ DOBLE */
+/* ===================================== */
+
+.planta.modo-doble .sb1{
+  animation:nacer 0.3s 0s forwards,
+            mover 5s 0.3s linear infinite;
+}
+
+.planta.modo-doble .sb2{
+  animation:nacer 0.3s 0.8s forwards,
+            mover 5s 1.1s linear infinite;
+}
+
+.planta.modo-doble .sb3{
+  animation:nacer 0.3s 1.6s forwards,
+            mover 5s 1.9s linear infinite;
+}
+
+/* ===================================== */
+/* ▶️ UNITARIO */
+/* ===================================== */
+
+.planta.modo-unitario .sb1{
+  animation:nacer 0.3s 0s forwards,
+            mover 5s 0.3s linear infinite;
+}
+
+.planta.modo-unitario .sb2{
+  animation:nacer 0.3s 1.2s forwards,
+            mover 5s 1.5s linear infinite;
+}
+
+.planta.modo-unitario .sb3{
+  animation:nacer 0.3s 2.4s forwards,
+            mover 5s 2.7s linear infinite;
+}
+
+
+.salida-final{
+  position:absolute;
+  left:2350px;
+  top:-4px;
+  z-index:6;
+
+}
+
+/* ===== LOTE ===== */
+.lote2{
+  position:absolute;
+
+  animation:
+    empuje-colector 1.5s linear forwards,
+    mover-lote 23s linear forwards;
+
+  animation-delay:
+    22s, 25s; /* 🔥 cada animación tiene su delay */
+}
+
+/* ===== BARRAS ===== */
+.barra.salida{
+  position:absolute;
+  width:900px;
+  height:6px;
+
+  background:#ff3b00; /* inicia caliente */
+ z-index:6;
+  transform-origin:left center;
+  transform:scaleX(0);
+
+  animation:
+    barra-secuencia 4s steps(14,end) forwards,
+    enfriar-color 2s linear forwards;
+
+  animation-delay: var(--delay), calc(var(--delay) + 2s);
+}
+
+@keyframes enfriar-color{
+
+  0%{
+    background:#ff3b00; /* rojo intenso */
+  }
+
+  25%{
+    background:#ff6a00; /* naranja */
+  }
+
+  50%{
+    background:#ffb300; /* amarillo */
+  }
+
+  75%{
+    background:#888888; /* gris caliente */
+  }
+
+  100%{
+    background:#6b6b6b; /* gris frío FINAL */
+  }
+
+}
+
+/* ===== CONFIGURACIÓN ===== */
+.b1{ --offsetY:0px;  --delay:0s;   --stackY:0px; }
+.b2{ --offsetY:16px; --delay:2s;   --stackY:-8px; }
+.b3{ --offsetY:0px;  --delay:4s;   --stackY:16px; }
+.b4{ --offsetY:16px; --delay:6s;   --stackY:8px; }
+.b5{ --offsetY:0px;  --delay:8s;   --stackY:32px; }
+.b6{ --offsetY:16px; --delay:10s;  --stackY:24px; }
+.b7{ --offsetY:0px;  --delay:12s;  --stackY:48px; }
+.b8{ --offsetY:16px; --delay:14s;  --stackY:40px; }
+.b9{ --offsetY:0px;  --delay:16s;  --stackY:64px; }
+.b10{--offsetY:16px; --delay:18s;  --stackY:56px; }
+
+/* ===== ANIMACIÓN PRINCIPAL ===== */
+@keyframes barra-secuencia{
+
+  0%{
+    transform:scaleX(0) translate(250px, var(--offsetY));
+    opacity:0;
+  }
+
+  10%{
+    opacity:1;
+  }
+
+  20%{
+    transform:scaleX(1) translate(250px, var(--offsetY));
+  }
+
+  60%{
+    transform:scaleX(1) translate(600px, var(--offsetY));
+  }
+
+  69%{
+    transform:scaleX(1) translate(600px, var(--offsetY));
+  }
+
+  80%{
+    transform:scaleX(1) translate(600px, calc(var(--offsetY) - 260px));
+  }
+
+  100%{
+    transform:scaleX(1) translate(
+      600px,
+      calc(var(--offsetY) - 480px + var(--stackY))
+    );
+  }
+}
+
+/* ===== EMPUJE AL COLECTOR ===== */
+@keyframes empuje-colector{
+  0%   { transform:translate(0, 0); }
+  10%  { transform:translate(0, -2px); }
+  20%  { transform:translate(0, -4px); }
+  30%  { transform:translate(0, -6px); }
+  40% { transform:translate(0, -8px); }
+  50%  { transform:translate(0, -10px); }
+  60%  { transform:translate(0, -10px); }
+  70%  { transform:translate(0, -25px); }
+  80% { transform:translate(0, -50px); }
+  90% { transform:translate(0, -75px); }
+  100% { transform:translate(0, -110px); }
+}
+
+/* ===== CIZALLA FRIO ===== */
+.cizalla-frio{
+  position:absolute;
+  left:5200px;
+  top:-390px;
+
+  width:200px;
+  height:200px;
+
+  z-index:100;
+}
+
+.cizalla-frio-cuerpo{
+  width:100%;
+  height:100%;
+
+  background:#005bbb;
+  border:2px solid #000;
+  border-radius:6px;
+
+  box-shadow:
+    inset 0 3px 6px rgba(255,255,255,0.3),
+    inset 0 -4px 6px rgba(0,0,0,0.4),
+    0 4px 6px rgba(0,0,0,0.5);
+
+  position:relative;
+}
+
+.cizalla-frio-cuerpo::after{
+  content:"";
+  position:absolute;
+
+  left:85%;
+  top:50%;
+
+  width:60%;
+  height:6px;
+
+  background:linear-gradient(to right,#000,#fff,#000);
+  border-radius:2px;
+
+  box-shadow:0 0 6px rgba(255,255,255,0.9);
+
+  transform:translate(-50%, -50%) rotate(90deg);
+
+  pointer-events:none;
+}
+.mover-lote{
+  animation: mover-lote 6s linear forwards;
+}
+@keyframes mover-lote{
+  from{
+    transform: translateX(0px) translateY(-110px);
+  }
+  to{
+    transform: translateX(-400px) translateY(-110px);
+  }
+}
+
+.mover-post-corte{
+  animation: mover-post-corte 2s linear forwards;
+}
+
+@keyframes mover-post-corte{
+  from{
+    transform: translateX(600px) translateY(-110px);
+  }
+  to{
+    transform: translateX(300px) translateY(-110px);
+  }
+}
+
+.cizalla-frio.activa .cizalla-frio-cuerpo::after{
+  animation: corte-flash 0.2s ease;
+}
+
+@keyframes corte-flash{
+  0%{
+    opacity:0;
+    transform:translate(-50%, -50%) rotate(90deg) scaleX(0.3);
+  }
+
+  50%{
+    opacity:1;
+    transform:translate(-50%, -50%) rotate(90deg) scaleX(1.5);
+  }
+
+  100%{
+    opacity:0;
+    transform:translate(-50%, -50%) rotate(90deg) scaleX(1);
+  }
+}
+
+
+/* BASE DEL TRANSFERIDOR */
+.transferidor{
+  position: absolute;
+
+  left: 4300px;   /* 👈 ajustar */
+  top: -648px;    /* 👈 ajustar */
+
+  width: 215px;
+  height: 300px;
+
+  background: #1ac2ab; /* verde industrial */
+  border: 2px solid #1b5e20;
+
+  z-index: 1;
+}
+
+
+
+.cadena{
+  position: absolute;
+
+  top: 0;
+  height: 100%;
+  width: 6px;
+
+  z-index: 3;
+
+  background: repeating-linear-gradient(
+    to bottom,
+    #2b2b2b,   /* negro grisáceo */
+    #2b2b2b 10px,
+    #6f6f6f 10px,
+    #6f6f6f 20px
+  );
+}
+
+/* DISTRIBUCIÓN UNIFORME */
+.cadena:nth-child(1){ left: 10%; }
+.cadena:nth-child(2){ left: 25%; }
+.cadena:nth-child(3){ left: 40%; }
+.cadena:nth-child(4){ left: 55%; }
+.cadena:nth-child(5){ left: 70%; }
+.cadena:nth-child(6){ left: 85%; }
+
+.cunas{
+  position: absolute;
+
+  left: 4300px;   /* ajustar */
+  top: -749px;    /* ajustar */
+
+  width: 220px;
+  height: 100px;
+
+  z-index: 1;
+}
+
+/* SOPORTES VERTICALES */
+.cuna-barra{
+  position: absolute;
+
+  top: 0;
+  height: 100%;
+  width: 6px;
+
+  background: #1ac2ab; /* mismo que transferidor */
+  border: 1px solid #1b5e20;
+}
+
+/* distribución horizontal */
+.cuna-barra:nth-child(1){ left: 0px; }
+.cuna-barra:nth-child(2){ left: 23px; }
+.cuna-barra:nth-child(3){ left: 46px; }
+.cuna-barra:nth-child(4){ left: 69px; }
+.cuna-barra:nth-child(5){ left: 92px; }
+.cuna-barra:nth-child(6){ left: 115px; }
+.cuna-barra:nth-child(7){ left: 138px; }
+.cuna-barra:nth-child(8){ left: 161px; }
+.cuna-barra:nth-child(9){ left: 184px; }
+.cuna-barra:nth-child(10){ left: 207px; }
+.cuna-barra:nth-child(10){ left: 211px; }
+
+
+.CaminoBarra{
+  position:absolute;
+  left:800px;
+  top:-737px;
+ 
+  width:3500px;
+  height:80px;
+
+z-index: 1;
+
+  background:
+  repeating-linear-gradient(
+    to right,
+    #3a3a3a 0px,
+    #3a3a3a 16px,
+
+    #111 16px,
+    #888 18px,
+    #ddd 20px,
+    #888 22px,
+    #111 24px,
+
+    #3a3a3a 24px,
+    #3a3a3a 40px
+  );
+
+  border:2px solid #000;
+
+  /* 👇 esto le da profundidad tipo canal */
+  box-shadow:
+    inset 0 8px 12px rgba(0,0,0,0.6),
+    inset 0 -8px 12px rgba(0,0,0,0.6);
+}
+
+/* ========================= */
+/* CONTENEDOR DOBLE */
+/* ========================= */
+
+.enzunchadoras{
+  position:absolute;
+  left: 3950px;
+  top: -720px;
+
+  display:flex;
+  gap:60px;
+
+  z-index:50;
+}
+
+
+/* ========================= */
+/* CADA MÁQUINA */
+/* ========================= */
+
+.enzunchadora{
+  position:relative;
+  width:120px;
+  height:100px;
+
+  overflow:visible; /* 🔥 CLAVE para que se vean los brazos */
+}
+
+
+/* BASE */
+.enzunchadora .cuerpo{
+  position:absolute;
+  bottom:0;
+  width:100%;
+  height:25px;
+
+  background:#444;
+  border:2px solid #111;
+}
+
+/* MARCO */
+.enzunchadora .marco{
+  position:absolute;
+  left:10px;
+  width:100px;
+  height:100px;
+
+  border:4px solid #000;
+  border-bottom:none;
+}
+
+/* ========================= */
+/* BRAZOS BASE */
+/* ========================= */
+
+.brazo{
+  position:absolute;
+  width:14px;
+  height:120px;
+
+  top:-30px; /* 🔥 mismo nivel para todos */
+
+  border:2px solid #000;
+  z-index:100;
+
+  transition:transform 0.2s ease;
+}
+
+
+/* ========================= */
+/* COLORES */
+/* ========================= */
+
+.sup-izq,
+.sup-der{
+  background:#f1c40f; /* 🟡 */
+}
+
+.inf-izq,
+.inf-der{
+  background:#c0392b; /* 🔴 */
+}
+
+
+/* ========================= */
+/* DISTRIBUCIÓN REAL */
+/* 🟡🔴 🟡🔴 */
+/* ========================= */
+
+/* PAR 1 */
+.sup-izq{ left:10px; }    /* 🟡 */
+.inf-izq{ left:30px; }    /* 🔴 */
+
+/* PAR 2 */
+.sup-der{ left:70px; }    /* 🟡 */
+.inf-der{ left:90px; }    /* 🔴 */
+
+.enzunchadora.activa .sup-izq{
+  transform: translateX(15px);
+}
+
+.enzunchadora.activa .inf-izq{
+  transform: translateX(-15px);
+}
+
+.enzunchadora.activa .sup-der{
+  transform: translateX(-15px);
+}
+
+.enzunchadora.activa .inf-der{
+  transform: translateX(15px);
+}
+
+
+/* ========================= */
+/* ⚖️ PESAJE (MÓDULO NUEVO) */
+/* ========================= */
+
+.pesaje{
+  position:absolute;
+
+  left: 800px;   /* 👈 AJUSTÁ SEGÚN TU PLANTA */
+  top: -640px;
+
+  width: 600px;
+  height: 40px;
+
+  display:flex;
+  gap:40px;
+
+  z-index:2;
+}
+
+
+/* ========================= */
+/* 🔗 CADENAS DEL PESAJE */
+/* ========================= */
+/* BASE DEL TRANSFERIDOR */
+.Pesaje{
+  position: absolute;
+
+  left: 800px;   /* 👈 ajustar */
+  top: -1040px;    /* 👈 ajustar */
+
+  width: 215px;
+  height: 300px;
+
+  background: #1ac2ab; /* verde industrial */
+  border: 2px solid #1b5e20;
+
+  z-index: 1;
+}
+
+
+
+.cadenaPesaje{
+  position: absolute;
+
+  top: 0;
+  height: 100%;
+  width: 6px;
+
+  z-index: 3;
+
+  background: repeating-linear-gradient(
+    to bottom,
+    #2b2b2b,   /* negro grisáceo */
+    #2b2b2b 10px,
+    #6f6f6f 10px,
+    #6f6f6f 20px
+  );
+}
+/* DISTRIBUCIÓN UNIFORME */
+.cadenaPesaje:nth-child(1){ left: 10%; }
+.cadenaPesaje:nth-child(2){ left: 25%; }
+.cadenaPesaje:nth-child(3){ left: 40%; }
+.cadenaPesaje:nth-child(4){ left: 55%; }
+.cadenaPesaje:nth-child(5){ left: 70%; }
+.cadenaPesaje:nth-child(6){ left: 85%; }
+
+.cunasPesaje{
+  position: absolute;
+
+  left: 800px;   /* ajustar */
+  top: -1100px;    /* ajustar */
+
+  width: 220px;
+  height: 60px;
+
+  z-index: 1;
+}
+
+/* SOPORTES VERTICALES */
+.cuna-barraPesaje{
+  position: absolute;
+
+  top: 0;
+  height: 100%;
+  width: 6px;
+
+  background: #1ac2ab; /* mismo que transferidor */
+  border: 1px solid #1b5e20;
+}
+
+/* distribución horizontal */
+.cuna-barraPesaje:nth-child(1){ left: 0px; }
+.cuna-barraPesaje:nth-child(2){ left: 42px; }
+.cuna-barraPesaje:nth-child(3){ left: 84px; }
+.cuna-barraPesaje:nth-child(4){ left: 126px; }
+.cuna-barraPesaje:nth-child(5){ left: 168px; }
+.cuna-barraPesaje:nth-child(6){ left: 210px; }
+
+
+
+
+.camino-bobina{
+  position:absolute;
+  left: 6733px;  /* ajusta */
+  top: 135px;
+z-index: 1;
+
+  pointer-events:none;
+}
+
+.carril{
+  position:absolute;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #555 0px,
+      #555 10px,
+      #2b2b2b 10px,
+      #2b2b2b 20px
+    );
+
+  border: 2px solid #222;
+  border-radius: 6px;
+}
+.camino-bobina::after{
+  content:"";
+  position:absolute;
+  inset:0;
+
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 118px,
+      rgba(0,0,0,0.4) 118px,
+      rgba(0,0,0,0.4) 120px
+    );
+}
+/* VERTICAL 1 */
+.v1{
+  width: 100px;
+  height: 900px;
+}
+
+/* HORIZONTAL 1 */
+.h1{
+  height: 100px;
+  width: 800px;
+}
+
+/* VERTICAL 2 */
+.v2{
+  width: 100px;
+  height: 800px;
+  
+}
+
+/* HORIZONTAL 2 */
+.h2{
+  height: 100px;
+  width: 800px;
+}
+
+
+.v2{ transform: translate(700.5px, 100px); }
+.h2{ transform: translate(0px, 800px); }
+
+
+
+
+
+.transferencia-bobina{
+  position:absolute;
+  width:20px;
+  height:20px;
+    left: 36%;   /* ajustar */
+  top: 36%;
+  background:red;
+  z-index:9999;
+}
+
+/* =============================== */
+/* 🔧 ENZUNCHADORA DE ROLLOS */
+/* =============================== */
+
+.enzunchadora-rollos{
+  position:absolute;
+
+  left: 7210px;
+  top: 36px;
+
+  width: 320px;
+  height: 320px;
+
+  pointer-events:none;
+}
+
+/* =============================== */
+/* 🔵 CENTRO */
+/* =============================== */
+
+.enzunchadora-rollos .centro{
+  position:absolute;
+
+  width: 150px;
+  height: 150px;
+
+  background: radial-gradient(circle at center, #e6d2a8, #b89c6b) !important;
+  border-radius:0%;
+
+  left: 50px;
+  top: 150px;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+
+  box-shadow:
+    inset 0 6px 10px rgba(0,0,0,0.4),
+    inset 0 -3px 6px rgba(255,255,255,0.3),
+    0 0 10px rgba(0,0,0,0.3);
+}
+
+/* =============================== */
+/* 🔥 BRAZOS */
+/* =============================== */
+.enzunchadora-rollos{
+  --cx: 50px;
+  --cy: 132px;
+  --d: 73px; /* distancia de cierre */
+}
+.enzunchadora-rollos .brazo{
+  position:absolute;
+
+  width: 100px;
+  height: 32px;
+
+  background: linear-gradient(180deg, #d8c29c, #9f865e) !important;
+  border-radius:8px;
+  left: var(--cx);
+  top: var(--cy);
+
+  transform-origin: left center;
+
+  box-shadow:
+    inset 0 4px 6px rgba(0,0,0,0.5),
+    inset 0 -2px 4px rgba(255,255,255,0.25),
+    0 2px 4px rgba(0,0,0,0.3);
+  
+}
+.enzunchadora-rollos .brazo{
+  transition: transform 0.4s cubic-bezier(0.7, 0, 0.3, 1);
+}
+
+/* =============================== */
+/* 📐 X ABIERTA */
+/* =============================== */
+
+.enzunchadora-rollos .b1{
+  transform: translate(143px, -143px) rotate(135deg);
+}
+
+.enzunchadora-rollos .b2{
+  transform: translate(-143px, -143px) rotate(-315deg);
+}
+
+.enzunchadora-rollos .b3{
+  transform: translate(143px, 143px) rotate(-135deg);
+}
+
+.enzunchadora-rollos .b4{
+  transform: translate(-143px, 143px) rotate(-45deg);
+}
+
+/* =============================== */
+/* 🔒 POSICIÓN CERRADA */
+/* =============================== */
+
+.enzunchadora-rollos.cerrando .b1{
+  transform: translate(var(--d), calc(-1 * var(--d))) rotate(135deg);
+}
+
+.enzunchadora-rollos.cerrando .b2{
+  transform: translate(calc(-1 * var(--d)), calc(-1 * var(--d))) rotate(-315deg);
+}
+
+.enzunchadora-rollos.cerrando .b3{
+  transform: translate(var(--d), var(--d)) rotate(-135deg);
+}
+
+.enzunchadora-rollos.cerrando .b4{
+  transform: translate(calc(-1 * var(--d)), var(--d)) rotate(-45deg);
+}
+/* =============================== */
+/* 🧱 DETALLE CENTRAL EXTRA */
+/* =============================== */
+
+.enzunchadora-rollos .centro::after{
+  content:"";
+  position:absolute;
+
+  width: 30px;
+  height: 30px;
+
+  background:#6f5c3f;
+  border-radius:50%;
+
+  left:50%;
+  top:50%;
+  transform: translate(-50%, -50%);
+
+  box-shadow:
+    inset 0 2px 5px rgba(255,255,255,0.2),
+    inset 0 -2px 5px rgba(0,0,0,0.5);
+}
+
+/* =============================== */
+/* ⚙️ PUNTAS DE BRAZO */
+/* =============================== */
+
+.enzunchadora-rollos .brazo::after{
+  content:"";
+  position:absolute;
+
+  right: -10px;
+  top: 50%;
+
+  width: 20px;
+  height: 20px;
+
+  background:#8a744f;
+  border-radius:50%;
+
+  transform: translateY(-50%);
+
+  box-shadow:
+    inset 0 2px 4px rgba(255,255,255,0.2),
+    0 0 4px rgba(0,0,0,0.4);
+}
+
+/* =============================== */
+/* 💥 FORZAR COLOR BEIGE */
+/* =============================== */
+
+.enzunchadora-rollos .brazo{
+  background: #d8c29c !important;
+}
+
+.enzunchadora-rollos .centro{
+  background: #e6d2a8 !important;
+}
+
+.enzunchadora-rollos .brazo::after{
+  background: #8a744f !important;
+}
+
+.enzunchadora-rollos .centro::after{
+  background: #6f5c3f !important;
+}
+
+.carril-elevador{
+  position: absolute;
+  left: 6050px;   /* ajusta con la plataforma */
+  top: 700px;
+
+  width: 20px;
+  height: 300px;
+
+  background: #222;
+  border-radius: 10px;
+
+  z-index: 4;
+}
+
+.plataforma-elevador{
+  position: absolute;
+  left: 902px;
+  top: -685px;
+
+  width: 120px;
+  height: 120px;
+
+  background: #d8c29c;
+  border-radius: 6px;
+
+  z-index: 10;
+}
+
+.elevador{
+  position: absolute;
+  left: 6000px;
+  top: 700px;
+  width: 140px;
+  height: 300px;
+}
+
+
+.riel2{
+  position: absolute;
+  left: 902px;
+  top: -970px;
+  width: 12px;
+  height: 400px;
+  background: repeating-linear-gradient(
+    to bottom,
+    #444 0px,
+    #444 10px,
+    #222 10px,
+    #222 20px
+  );
+}
+
+.riel2-izq{
+  left: 1010px;
+}
+
+.riel2-der{
+  right: 0;
+}
+
+
+.recepcion-rollos{
+  position: absolute;
+  left: 7030px;   /* ajusta a tu layout */
+  top: -288px;
+
+  width: 200px;
+  height: 120px;
+
+  background: #111;
+  border: 2px solid #333;
+  border-radius: 6px;
+
+  z-index: 1;
+}
+
+

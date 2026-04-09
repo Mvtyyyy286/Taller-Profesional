@@ -1,0 +1,1497 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Área de Laminación</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+<header class="encabezado">
+  <img src="logo-aza2.png" alt="Logo AZA" class="logo-empresa">
+  <div class="titulo">
+    <h1>Área de Laminación</h1>
+    <p>Mapa interactivo del proceso productivo y seguridad </p>
+  </div>
+</header>
+<div class="visor">
+<div class="planta">
+  <div class="escena">
+
+
+<div class="equipo mesa-carga"
+     onclick="mostrarEquipo(event, 'mesa_carga')"
+     data-nombre="Mesa De Carga">
+
+
+    <!-- Bastidor central de la mesa -->
+    <div class="mesa-bastidor">
+      <span class="riel"></span>
+      <span class="riel"></span>
+      <span class="riel"></span>
+      <span class="riel"></span>
+      <span class="riel"></span>
+      <span class="riel"></span>
+      <span class="riel"></span>
+      <span class="riel"></span>
+      <span class="riel"></span>
+      <span class="riel"></span>
+      <span class="riel"></span>
+      <span class="riel"></span>
+    </div>
+
+    <!-- Palanquillas sobre la mesa -->
+    <div class="palanquillas">
+      <div class="lote">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <div class="lote">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- HORNO -->
+<div class="equipo horno-recalentamiento"
+     onclick="mostrarEquipo(event,'horno')"
+     data-nombre="horno">
+
+  <!-- CARRIL DE ENTRADA -->
+  <div  class="carril-entrada-horno"
+    onclick="mostrarEquipoCarril(event, 'Carril de Entrada al Horno')"
+  >
+<div class="rodillos-carril">
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+
+    <div class="palanquilla-carril"></div>
+ </div>
+
+<!-- BASTIDOR / RIELES VERTICALES DEL HORNO -->
+<div class="horno-bastidor-vertical">
+  <span class="riel-vertical"></span>
+  <span class="riel-vertical"></span>
+  <span class="riel-vertical"></span>
+</div>
+
+<!-- LLAMAS INTERNAS DEL HORNO -->
+<div class="llamas-horno">
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+</div>
+
+<div class="llamas-horno-Derecha">
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+</div>
+  <!-- PALANQUILLAS DENTRO DEL HORNO -->
+  <div class="palanquillas-horno">
+
+    <span class="muy-fria"></span>
+    <span class="muy-fria"></span>
+
+    <span class="Calentando"></span>
+    <span class="Calentando"></span>
+
+    <span class="tibia"></span>
+    <span class="tibia"></span>
+
+    <span class="media"></span>
+    <span class="media"></span>
+    <span class="media"></span>
+
+    <span class="caliente"></span>
+    <span class="caliente"></span>
+    <span class="caliente"></span>
+</div>
+  
+
+  <!-- CARRIL DE SALIDA -->
+  <div
+    class="carril-salida-horno"
+    onclick="mostrarEquipoCarril(event, 'Carril de Salida del Horno')"
+  >
+
+  <div class="rodillos-carril">
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    
+  </div>
+  <div class="rodillo-captura"></div>
+  <div class="palanquilla-carril-salida palanquilla-arrastre"></div>
+  <div class="palanquilla-carril-salida palanquilla-arrastre"></div>
+</div>
+
+
+
+</div>  <!-- FIN DEL HORNO -->
+
+<div class="equipo arrastrador-1-jaula"
+  onclick="mostrarEquipo(event,'arrastrador_1')"
+  data-nombre="Arrastrador 1"
+> <div class="nombre-equipo">Arrastrador 1</div>
+  <div class="jaula">
+    <span></span>
+    <span></span>
+  </div>
+
+</div>
+
+<!-- CARRIL HACIA DESBASTADOR -->
+
+ <div class="carril-arrastrador-desbaste"
+  onclick="mostrarEquipoCarril(event, 'Carril Arrastrador – Desbaste')"
+>
+  <div class="rodillos-carril">
+    <span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span>
+    
+
+  </div>
+</div>
+
+<div class="escalera-aerea">
+
+  <div class="bloque-extremo"></div>
+ <div class="bloque-extremo"></div>
+  <div class="bloque-extremo"></div>
+
+  <div class="pasarela-central"></div>
+
+  <div class="bloque-extremo"></div>
+ <div class="bloque-extremo"></div>
+  <div class="bloque-extremo"></div>
+
+</div>
+
+<div class="barra-laminacion">
+  <div class="tramo etapa-1"></div>
+  <div class="tramo etapa-2"></div>
+  <div class="tramo etapa-3"></div>
+  <div class="tramo etapa-4"></div>
+  <div class="tramo etapa-5"></div>
+  <div class="tramo etapa-6"></div>
+   <div class="tramo etapa-final"></div>
+</div>
+<!-- Tren Desbaste -->
+<div class="desbastador desbastador--h etapa-1"
+ onclick="mostrarEquipo(event, 'd1h')"
+ data-nombre="d1h"
+
+  style="left:670px; top:200px">
+
+  <div class="nombre-equipo">D1H
+</div>
+
+  <div class="guia-entrada">
+    <span class="superior"></span>
+    <span class="inferior"></span>
+  </div>
+
+  <div class="rodillo">
+    <div class="superior"></div>
+    <div class="canal"></div>
+    <div class="inferior"></div>
+  </div>
+</div>
+
+<div class="equipo desbastador d2v" 
+onclick="mostrarEquipo(event,'d2v')"
+data-nombre="d2v"
+ style="left:740px; top:200px">
+
+  <div class="nombre-equipo">D2V</div>
+
+  <!-- Guía de entrada -->
+  <div class="guia-entrada">
+    <span class="linea superior"></span>
+    <span class="linea inferior"></span>
+  </div>
+
+  <div class="desbastador-cuerpo">
+
+   
+    <div class="rodillo-vertical superior"></div>
+
+    <div class="barra-laminada1.etapa-2"></div>
+
+    <div class="rodillo-vertical inferior"></div>
+
+  </div>
+</div>
+
+<div class="desbastador desbastador--h etapa-3"
+onclick="mostrarEquipo(event,'d3h')"
+data-nombre="d3h"
+ style="left:810px; top:200px">
+  <div class="nombre-equipo">D3H</div>
+
+  <div class="guia-entrada">
+    <span class="superior"></span>
+    <span class="inferior"></span>
+  </div>
+
+  <div class="rodillo">
+    <div class="superior"></div>
+    <div class="canal"></div>
+    <div class="inferior"></div>
+  </div>
+</div>
+
+<div class="equipo desbastador d4v" 
+onclick="mostrarEquipo(event,'d4v')"
+data-nombre="d4v"
+ style="left:880px; top:200px">
+
+  <div class="nombre-equipo">D4V</div>
+
+  <!-- Guía de entrada -->
+  <div class="guia-entrada">
+    <span class="linea superior"></span>
+    <span class="linea inferior"></span>
+  </div>
+
+  <div class="desbastador-cuerpo">
+
+    <!-- Rodillo superior -->
+    <div class="rodillo-vertical superior"></div>
+
+    <!-- Barra (misma que viene de D1) -->
+    <div class="barra-laminada h2"></div>
+
+    <!-- Rodillo inferior -->
+    <div class="rodillo-vertical inferior"></div>
+
+  </div>
+</div>
+
+<div class="desbastador desbastador--h etapa-5"
+onclick="mostrarEquipo(event,'d5h')"
+data-nombre="d5h"
+ style="left:950px; top:200px">
+  <div class="nombre-equipo">D5H</div>
+
+  <div class="guia-entrada">
+    <span class="superior"></span>
+    <span class="inferior"></span>
+  </div>
+
+  <div class="rodillo">
+    <div class="superior"></div>
+    <div class="canal"></div>
+    <div class="inferior"></div>
+  </div>
+</div>
+
+<div class="equipo desbastador d6v" 
+onclick="mostrarEquipo(event,'d6v')"
+data-nombre="d6v"
+ style="left:1020px; top:200px">
+
+  <div class="nombre-equipo">D6V</div>
+
+  <!-- Guía de entrada -->
+  <div class="guia-entrada">
+    <span class="linea superior"></span>
+    <span class="linea inferior"></span>
+  </div>
+
+  <div class="desbastador-cuerpo">
+
+    <!-- Rodillo superior -->
+    <div class="rodillo-vertical superior"></div>
+
+    <!-- Barra (misma que viene de D1) -->
+    <div class="barra-laminada h2"></div>
+
+    <!-- Rodillo inferior -->
+    <div class="rodillo-vertical inferior"></div>
+
+  </div>
+</div>
+
+<div class="equipo cizalla" 
+onclick="mostrarEquipo(event,'cvs1')"
+data-nombre="cvs1"
+style="left:1090px; top:225.5px">
+
+  <div class="nombre-equipo">Cizalla CVS 1</div>
+
+<div class="guia-entrada-cizalla">
+  <span class="linea superior"></span>
+  <span class="linea inferior"></span>
+</div>
+
+  <div class="cizalla-cuerpo">
+    <div class="rodillo-cizalla"></div>
+  </div>
+
+</div>
+
+<!--Fin Tren Desbaste -->
+
+<div class="canal-guia"
+  style="left:1190px; top:255.5px">
+</div>
+<!-- Tren Medio-->
+<div class="desbastador desbastador--h etapa-1"
+ onclick="mostrarEquipo(event,'d7h')"
+ data-nombre="d7h"
+  style="left:1250px; top:200px">
+
+  <div class="nombre-equipo">D7H</div>
+
+  <div class="guia-entrada">
+    <span class="superior"></span>
+    <span class="inferior"></span>
+  </div>
+
+  <div class="rodillo">
+    <div class="superior"></div>
+    <div class="canal"></div>
+    <div class="inferior"></div>
+  </div>
+</div>
+
+<div class="formador-lazo f1" onclick="mostrarEquipo(event,'Formador de Lazos')"
+data-nombre="formador_lazos"
+style="left:1300px; top:215px">
+
+  <div class="nombre-equipo">Formador<br>de Lazos</div>
+
+  <div class="caja-lazo">
+    <svg class="omega" viewBox="0 0 110 60" preserveAspectRatio="none">
+      <path d="M0 45 Q55 45 110 45"></path>
+    </svg>
+  </div>
+
+</div>
+
+<div class="equipo desbastador d2v" 
+onclick="mostrarEquipo(event,'d8v')"
+data-nombre="d8v"
+ style="left:1420px; top:200px">
+
+  <div class="nombre-equipo">D8V</div>
+
+  <!-- Guía de entrada -->
+  <div class="guia-entrada">
+    <span class="linea superior"></span>
+    <span class="linea inferior"></span>
+  </div>
+
+  <div class="desbastador-cuerpo">
+
+   
+    <div class="rodillo-vertical superior"></div>
+
+    <div class="barra-laminada1.etapa-2"></div>
+
+    <div class="rodillo-vertical inferior"></div>
+
+  </div>
+</div>
+
+<div class="formador-lazo f2" onclick="mostrarEquipo(event,'Formador de Lazos')"
+data-nombre="formador_lazos"
+style="left:1470px; top:215px">
+
+  <div class="nombre-equipo">Formador<br>de Lazos</div>
+
+  <div class="caja-lazo">
+    <svg class="omega" viewBox="0 0 110 60" preserveAspectRatio="none">
+      <path d="M0 45 Q55 45 110 45"></path>
+    </svg>
+  </div>
+
+</div>
+
+<div class="desbastador desbastador--h etapa-1"
+ onclick="mostrarEquipo(event,'d9h')"
+ data-nombre="d9h"
+  style="left:1590px; top:200px">
+
+  <div class="nombre-equipo">D9H</div>
+
+  <div class="guia-entrada">
+    <span class="superior"></span>
+    <span class="inferior"></span>
+  </div>
+
+  <div class="rodillo">
+    <div class="superior"></div>
+    <div class="canal"></div>
+    <div class="inferior"></div>
+  </div>
+</div>
+
+<div class="formador-lazo f3" onclick="mostrarEquipo(event,'Formador de Lazos')"
+data-nombre="Formador_Lazos"
+style="left:1640px; top:215px">
+
+  <div class="nombre-equipo">Formador<br>de Lazos</div>
+
+
+  <div class="caja-lazo">
+    <svg class="omega" viewBox="0 0 110 60" preserveAspectRatio="none">
+      <path d="M0 45 Q55 45 110 45"></path>
+    </svg>
+  </div>
+
+
+</div>
+
+<div class="equipo desbastador d2v" 
+onclick="mostrarEquipo(event,'d10v')"
+data-nombre="d10v"
+ style="left:1760px; top:200px">
+
+  <div class="nombre-equipo">D10V</div>
+
+  <!-- Guía de entrada -->
+  <div class="guia-entrada">
+    <span class="linea superior"></span>
+    <span class="linea inferior"></span>
+  </div>
+
+  <div class="desbastador-cuerpo">
+
+   
+    <div class="rodillo-vertical superior"></div>
+
+    <div class="barra-laminada1.etapa-2"></div>
+
+    <div class="rodillo-vertical inferior"></div>
+
+  </div>
+</div>
+
+<div class="formador-lazo f4" onclick="mostrarEquipo(event,'Formador de Lazos')"
+data-nombre="Formador_Lazos"
+style="left:1810px; top:215px">
+
+  <div class="nombre-equipo">Formador<br>de Lazos</div>
+
+
+  <div class="caja-lazo">
+    <svg class="omega" viewBox="0 0 110 60" preserveAspectRatio="none">
+      <path d="M0 45 Q55 45 110 45"></path>
+    </svg>
+  </div>
+
+
+</div>
+
+<div class="desbastador desbastador--h etapa-1"
+ onclick="mostrarEquipo(event,'d11h')"
+ data-nombre="d11h"
+  style="left:1930px; top:200px">
+
+  <div class="nombre-equipo">D11H</div>
+
+  <div class="guia-entrada">
+    <span class="superior"></span>
+    <span class="inferior"></span>
+  </div>
+
+  <div class="rodillo">
+    <div class="superior"></div>
+    <div class="canal"></div>
+    <div class="inferior"></div>
+  </div>
+</div>
+
+<div class="formador-lazo f5" onclick="mostrarEquipo(event,'Formador de Lazos')"
+data-nombre="Formador_Lazos"
+style="left:1980px; top:215px">
+
+  <div class="nombre-equipo">Formador<br>de Lazos</div>
+
+  <div class="caja-lazo">
+    <svg class="omega" viewBox="0 0 110 60" preserveAspectRatio="none">
+      <path d="M0 45 Q55 45 110 45"></path>
+    </svg>
+  </div>
+
+</div>
+
+<div class="equipo desbastador d2v" 
+onclick="mostrarEquipo(event,'d12v')"
+data-nombre="d12v"
+ style="left:2100px; top:200px">
+
+  <div class="nombre-equipo">D12V</div>
+
+  <!-- Guía de entrada -->
+  <div class="guia-entrada">
+    <span class="linea superior"></span>
+    <span class="linea inferior"></span>
+  </div>
+
+  <div class="desbastador-cuerpo">
+
+   
+    <div class="rodillo-vertical superior"></div>
+
+    <div class="barra-laminada1.etapa-2"></div>
+
+    <div class="rodillo-vertical inferior"></div>
+
+  </div>
+</div>
+
+<div class="formador-lazo f6" onclick="mostrarEquipo(event,'Formador de Lazos')"
+data-nombre="Formador_Lazos"
+style="left:2150px; top:215px">
+
+  <div class="nombre-equipo">Formador<br>de Lazos</div>
+
+
+  <div class="caja-lazo">
+    <svg class="omega" viewBox="0 0 110 60" preserveAspectRatio="none">
+      <path d="M0 45 Q55 45 110 45"></path>
+    </svg>
+  </div>
+
+
+</div>
+
+<div class="desbastador desbastador--h etapa-1"
+ onclick="mostrarEquipo(event,'d13h')"
+ data-nombre="d13h"
+  style="left:2270px; top:200px">
+
+  <div class="nombre-equipo">D13H</div>
+
+  <div class="guia-entrada">
+    <span class="superior"></span>
+    <span class="inferior"></span>
+  </div>
+
+  <div class="rodillo">
+    <div class="superior"></div>
+    <div class="canal"></div>
+    <div class="inferior"></div>
+  </div>
+</div>
+
+<div class="formador-lazo f7" onclick="mostrarEquipo(event,'Formador de Lazos')"
+data-nombre="Formador_Lazos"
+style="left:2320px; top:215px">
+
+  <div class="nombre-equipo">Formador<br>de Lazos</div>
+
+
+  <div class="caja-lazo">
+    <svg class="omega" viewBox="0 0 110 60" preserveAspectRatio="none">
+      <path d="M0 45 Q55 45 110 45"></path>
+    </svg>
+  </div>
+
+
+</div>
+
+<div class="equipo desbastador d2v" 
+onclick="mostrarEquipo(event,'d14v')"
+data-nombre="d14v"
+ style="left:2440px; top:200px">
+
+  <div class="nombre-equipo">D14V</div>
+
+  <!-- Guía de entrada -->
+  <div class="guia-entrada">
+    <span class="linea superior"></span>
+    <span class="linea inferior"></span>
+  </div>
+
+  <div class="desbastador-cuerpo">
+
+   
+    <div class="rodillo-vertical superior"></div>
+
+    <div class="barra-laminada1.etapa-2"></div>
+
+    <div class="rodillo-vertical inferior"></div>
+
+  </div>
+</div>
+
+<div class="canal-guia"
+  style="left:2520px; top:255.5px">
+</div>
+
+<div class="semicirculo"></div>
+<!-- Fin Tren Medio-->
+
+<div class="canal-guia"
+  style="left:2620px; top:255.5px">
+</div>
+
+<div class="guia-desviador"></div>
+<div class="brazo-desviador">
+
+</div>
+
+
+<div class="tunel-tubos tunel-recto">
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+
+
+</div>
+
+<div class="tunel-tubos tunel-diagonal equipo"
+onclick="mostrarEquipo(event,'caja_agua_4')">
+<div class="nombre-equipo">Caja de Agua N°4</div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+
+  <div class="tubo-azul-grande"></div>
+  <div class="tubo-azul-chico"></div>
+  <div class="tubo-azul-grande"></div>
+  <div class="tubo-azul-chico"></div>
+  <div class="tubo-azul-grande"></div>
+  <div class="tubo-azul-chico"></div>
+  <div class="tubo-azul-grande"></div>
+
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+
+</div>
+
+<div class="tunel-tubos tunel-inferior">
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+
+
+
+</div>
+
+
+<div class="pasarela-cruce">
+
+  <div class="escalera escalera-arriba"></div>
+
+  <div class="pasarela"></div>
+
+  <div class="escalera escalera-abajo"></div>
+
+</div>
+
+
+<div class="equipo caja-agua" onclick="mostrarEquipo(event,'caja_agua_5')" data-nombre="caja_agua_5">
+
+  <div class="nombre-equipo">Caja de Agua N°5</div>
+
+  <div class="caja-superior"></div>
+
+  <div class="tuberias">
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <div class="caja-inferior"></div>
+
+</div>
+
+<div class="equipo cizalla cizalla-monobloque"
+onclick="mostrarEquipo(event,'cvs2')"
+data-nombre="Cizalla CVS 2"
+style="left:3400px; top:550px">
+
+  <div class="nombre-equipo">Cizalla CVS 2</div>
+
+  <div class="guia-entrada-cizalla">
+    <span class="linea superior"></span>
+    <span class="linea inferior"></span>
+  </div>
+
+  <div class="cizalla-cuerpo">
+    <div class="rodillo-cizalla"></div>
+  </div>
+
+</div>
+<div class="formador-lazo f-monobloque"
+onclick="mostrarEquipo(event,'Formador de Lazos')"
+data-nombre="formador_lazos"
+style="left:3460px; top:540px">
+
+  <div class="nombre-equipo">Formador<br>de Lazos</div>
+
+  <div class="caja-lazo">
+    <svg class="omega" viewBox="0 0 110 60" preserveAspectRatio="none">
+      <path d="M0 45 Q55 45 110 45"></path>
+    </svg>
+  </div>
+
+</div>
+
+
+<div class="equipo monobloque"
+onclick="mostrarEquipo(event, 'monobloque')"
+data-nombre="monobloque">
+
+  <div class="nombre-equipo">Monobloque</div>
+
+  <div class="tapa">
+    <div class="ojo"></div>
+    <div class="ojo"></div>
+  </div>
+
+  <div class="tapa">
+    <div class="ojo"></div>
+    <div class="ojo"></div>
+  </div>
+
+  <div class="tapa">
+    <div class="ojo"></div>
+    <div class="ojo"></div>
+  </div>
+  <div class="tapa">
+    <div class="ojo"></div>
+    <div class="ojo"></div>
+  </div>
+   <div class="tapa">
+    <div class="ojo"></div>
+    <div class="ojo"></div>
+  </div>
+
+</div>
+
+<div class="guia-desviador-monobloque"></div>
+<div class="brazo-desviador-monobloque"></div>
+
+<div class="canal-subida">
+
+  <div class="equipo caja-subida-agua"
+onclick="mostrarEquipo(event,'caja_agua_6')">
+
+<div class="nombre-equipo">Caja Agua N°6</div>
+
+</div>
+
+ <div class="equipo caja-subida-caliente"
+onclick="mostrarEquipo(event,'arrastrador_6')">
+
+<div class="nombre-equipo">Arrastrador 6</div>
+
+</div>
+
+<div class="equipo caja-subida-agua"
+onclick="mostrarEquipo(event,'caja_agua_7')">
+
+<div class="nombre-equipo">Caja Agua N°7</div>
+
+</div>
+
+  <div class="tubo-guia"></div>
+
+<div class="equipo caja-subida-agua"
+onclick="mostrarEquipo(event,'caja_agua_8')">
+
+<div class="nombre-equipo">Caja Agua N°8</div>
+
+</div>
+ <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+
+</div>
+
+
+
+<div class="tunel-tubos tunel-superior-continuacion">
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+
+
+</div>
+
+<div class="guia-desviador-union"></div>
+<div class="brazo-desviador-union"></div>
+
+<div class="carril-inferior-continuacion">
+
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+<div class="equipo caja-subida-agua"
+onclick="mostrarEquipo(event,'caja_agua_1')">
+
+<div class="nombre-equipo">Caja Agua N°1</div>
+
+</div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+
+<div class="equipo caja-subida-agua"
+onclick="mostrarEquipo(event,'caja_agua_2')">
+
+<div class="nombre-equipo">Caja Agua N°2</div>
+
+</div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+
+<div class="equipo caja-subida-agua"
+onclick="mostrarEquipo(event,'caja_agua_3')">
+
+<div class="nombre-equipo">Caja Agua N°3</div>
+
+</div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+   <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+   <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+   <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+   <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+   <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+   <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+   <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+   <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+   <div class="tubo-guia"></div>
+  
+</div>
+
+<div class="tunel-tubos tunel-superior-continuacion-2">
+
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+
+<div class="equipo caja-subida-caliente"
+onclick="mostrarEquipo(event,'arrastrador_7')">
+
+<div class="nombre-equipo">Arrastrador 7</div>
+
+</div>
+</div>
+
+<div class="equipo formador-espiras"
+onclick="mostrarEquipo(event,'formador_espiras')"
+data-nombre="Formador de Espiras">
+
+  <div class="nombre-equipo">Formador de Espiras</div>
+
+  <div class="cuerpo-formador"></div>
+
+  <div class="canal-resorte"></div>
+
+</div>
+
+
+<div class="stelmor">
+
+  <div class="rodillos-stelmor"></div>
+
+  <div class="espiras-stelmor">
+  
+  </div>
+
+  <div class="colectordeespiras">
+    <div class="espira-cabezal"></div>
+    <div class="cabezal-colector">
+      
+    </div>
+  </div>
+
+</div>
+
+
+<div class="jaula-delimitador modo-doble">
+<div class="selector-modo">
+
+  <span>Modo operación:</span>
+
+  <button onclick="activarModo('doble')">Doble canal</button>
+
+  <button onclick="activarModo('unitario')">Canal unitario</button>
+
+</div>
+  <!-- guía que mueve la barra (desviador real) -->
+  <div class="canal-guia canal-jaula"></div>
+
+  <!-- Cizalla CVS7 -->
+  <div class="equipo cizalla cizalla-cvs7"
+       onclick="mostrarEquipo(event,'cvs7')"
+       data-nombre="Cizalla CVS 7">
+
+    <div class="nombre-equipo">Cizalla CVS 7</div>
+
+    <div class="guia-entrada-cizalla">
+      <span class="linea superior"></span>
+      <span class="linea inferior"></span>
+    </div>
+
+    <div class="cizalla-cuerpo">
+      <div class="rodillo-cizalla"></div>
+    
+    </div>
+
+  </div>
+
+  <!-- Canales dobles -->
+  <div class="canales-cvs7">
+    <div class="canal-guia canal-cvs7 canal-superior"></div>
+    <div class="canal-guia canal-cvs7 canal-inferior"></div>
+  </div>
+
+  <!-- canal unitario -->
+<div class="canal-unitario">
+
+  <div class="embudo-entrada"></div>
+
+  <div class="canal-guia cuerpo-canal"></div>
+
+</div>
+
+</div>
+
+
+<div class="tunel-tubos tunel-cvs7-superior">
+
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+
+</div>
+
+<div class="tunel-tubos tunel-cvs7-inferior">
+
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+  <div class="tubo-guia"></div>
+
+
+</div>
+
+<div class="equipo frenacolas"
+onclick="mostrarEquipo(event,'frenacolas')"
+data-nombre="Frenacolas">
+
+
+<div class="nombre-equipo">Frenacolas</div>
+
+<div class="freno-cuerpo">
+
+<div class="rodillo-freno"></div>
+<div class="rodillo-freno"></div>
+
+</div>
+
+</div>
+
+<!-- =============================== -->
+<!-- PARRILLA DE ENFRIAMIENTO -->
+<!-- =============================== -->
+
+<div class="equipo parrilla-enfriamiento"
+     onclick="mostrarEquipo(event,'parrilla_enfriamiento')"
+     data-nombre="Parrilla de Enfriamiento">
+
+
+<div class="nombre-equipo">Parrilla de Enfriamiento</div>
+
+<div class="parrilla-grid">
+
+<div class="rake fijo"></div>
+<div class="rake movil"></div>
+<div class="rake fijo"></div>
+<div class="rake movil"></div>
+<div class="rake fijo"></div>
+<div class="rake movil"></div>
+<div class="rake fijo"></div>
+<div class="rake movil"></div>
+<div class="rake fijo"></div>
+<div class="rake movil"></div>
+<div class="rake fijo"></div>
+<div class="rake movil"></div>
+<div class="rake fijo"></div>
+<div class="rake movil"></div>
+<div class="rake fijo"></div>
+<div class="rake movil"></div>
+<div class="rake fijo"></div>
+<div class="rake movil"></div>
+<div class="rake fijo"></div>
+<div class="rake movil"></div>
+<div class="rake fijo"></div>
+<div class="rake movil"></div>
+<div class="rake fijo"></div>
+<div class="rake movil"></div>
+<div class="rake fijo"></div>
+<div class="rake movil"></div>
+<div class="rake fijo"></div>
+<div class="rake movil"></div>
+<div class="rake fijo"></div>
+<div class="rake movil"></div>
+<div class="rake fijo"></div>
+<div class="rake movil"></div>
+<div class="rake fijo"></div>
+<div class="rake movil"></div>
+<div class="rake fijo"></div>
+<div class="rake movil"></div>
+<div class="rake fijo"></div>
+<div class="rake movil"></div>
+<div class="rake fijo"></div>
+<div class="rake movil"></div>
+<div class="rake fijo"></div>
+<div class="rake movil"></div>
+<div class="rake fijo"></div>
+<div class="rake movil"></div>
+<div class="rake fijo"></div>
+<div class="rake movil"></div>
+<div class="rake fijo"></div>
+<div class="rake movil"></div>
+<div class="rake fijo"></div>
+<div class="rake movil"></div>
+<div class="rake fijo"></div>
+<div class="rake movil"></div>
+<div class="rake fijo"></div>
+<div class="rake movil"></div>
+<div class="rake fijo"></div>
+
+</div>
+
+</div>
+
+<div class="manto">
+
+  <div class="base-manto"></div>
+
+  <div class="rodillos-manto">
+    <div class="rodillo-manto"></div>
+    <div class="rodillo-manto"></div>
+    <div class="rodillo-manto"></div>
+    <div class="rodillo-manto"></div>
+    <div class="rodillo-manto"></div>
+  </div>
+
+</div>
+
+<div class="colector">
+
+</div>
+
+
+<div class="selector-producto-mapa">
+
+  <button onclick="setProducto('gruesa')" class="btn-prod">
+    Barra Gruesa
+  </button>
+
+  <button onclick="setProducto('delgada')" class="btn-prod">
+    Barra Delgada
+  </button>
+
+  <button onclick="setProducto('rollo')" class="btn-prod">
+    Rollo
+  </button>
+
+</div>
+
+
+<div class="tunel-tubos tunel-recto">
+</div>
+
+
+<div class="salida-cizalla"></div>
+<div class="salida-desviador"></div>
+
+
+<div class="barra-estatica">
+  <div class="seg s1"></div>
+  <div class="seg s2"></div>
+  <div class="seg s3"></div>
+  <div class="seg s4"></div>
+</div>
+
+<div class="barra-rollo">
+  <div class="r1"></div>
+  <div class="r2"></div>
+</div>
+
+<div class="barra-delgada">
+  <div class="d1"></div>
+  <div class="d2"></div>
+  <div class="d3"></div>
+  <div class="d4"></div>
+</div>
+
+
+<div class="salida-barras">
+  <div class="sb1"></div>
+  <div class="sb2"></div>
+  <div class="sb3"></div>
+</div>
+
+ 
+<!-- =============================== -->
+<!-- TODO BIEN HASTA ACA-->
+<!-- =============================== -->
+
+
+<div class="salida-final">
+
+  <div class="lote2">
+
+    <div class="barra salida b1"></div>
+    <div class="barra salida b2"></div>
+    <div class="barra salida b3"></div>
+    <div class="barra salida b4"></div>
+    <div class="barra salida b5"></div>
+    <div class="barra salida b6"></div>
+    <div class="barra salida b7"></div>
+    <div class="barra salida b8"></div>
+    <div class="barra salida b9"></div>
+    <div class="barra salida b10"></div>
+
+  </div>
+
+</div>
+
+<div class="cizalla-frio" onclick="mostrarEquipo(event,'ccf')"
+data-nombre="Cizalla Corte Frío">
+
+  <div class="cizalla-frio-cuerpo"></div>
+  <div class="nombre-equipo">Cizalla Corte Frío</div>
+</div>
+
+
+<div class="transferidor">
+  <div class="cadena"></div>
+  <div class="cadena"></div>
+  <div class="cadena"></div>
+  <div class="cadena"></div>
+  <div class="cadena"></div>
+  <div class="cadena"></div>
+</div>
+
+<div class="cunas">
+  <div class="cuna-barra"></div>
+  <div class="cuna-barra"></div>
+  <div class="cuna-barra"></div>
+  <div class="cuna-barra"></div>
+  <div class="cuna-barra"></div>
+  <div class="cuna-barra"></div>
+  <div class="cuna-barra"></div>
+  <div class="cuna-barra"></div>
+  <div class="cuna-barra"></div>
+  <div class="cuna-barra"></div>
+  <div class="cuna-barra"></div>
+
+
+</div>
+
+
+<div class="CaminoBarra">
+
+  <div class="base-manto"></div>
+
+  <div class="rodillos-manto">
+    <div class="rodillo-manto"></div>
+    <div class="rodillo-manto"></div>
+    <div class="rodillo-manto"></div>
+    <div class="rodillo-manto"></div>
+    <div class="rodillo-manto"></div>
+  </div>
+
+</div>
+
+<div class="enzunchadoras" onclick="mostrarEquipo(event,'enzunchadora')"
+data-nombre="Enzunchadoras 1 y 2">
+
+<div class="nombre-equipo">Enzunchadoras 1 y 2</div>
+  <!-- 🔧 ENZUNCHADORA 1 -->
+  <div class="enzunchadora">
+
+    <div class="cuerpo"></div>
+    <div class="marco"></div>
+
+    <!-- 🟡 SUPERIORES -->
+    <div class="brazo sup-izq"></div>
+    <div class="brazo sup-der"></div>
+
+    <!-- 🔴 INFERIORES (AHORA TAMBIÉN BRAZOS) -->
+    <div class="brazo inf-izq"></div>
+    <div class="brazo inf-der"></div>
+
+  </div>
+
+  <!-- 🔧 ENZUNCHADORA 2 -->
+  <div class="enzunchadora">
+
+    <div class="cuerpo"></div>
+    <div class="marco"></div>
+
+    <div class="brazo sup-izq"></div>
+    <div class="brazo sup-der"></div>
+
+    <div class="brazo inf-izq"></div>
+    <div class="brazo inf-der"></div>
+
+  </div>
+
+</div>
+
+<div class="Pesaje">
+  <div class="cadenaPesaje"></div>
+  <div class="cadenaPesaje"></div>
+  <div class="cadenaPesaje"></div>
+  <div class="cadenaPesaje"></div>
+  <div class="cadenaPesaje"></div>
+  <div class="cadenaPesaje"></div>
+</div>
+
+<div class="cunasPesaje">
+  <div class="cuna-barraPesaje"></div>
+  <div class="cuna-barraPesaje"></div>
+  <div class="cuna-barraPesaje"></div>
+  <div class="cuna-barraPesaje"></div>
+  <div class="cuna-barraPesaje"></div>
+ <div class="cuna-barraPesaje"></div>
+</div>
+
+
+<div class="camino-bobina">
+
+  <div class="carril vertical v1"></div>
+  <div class="carril horizontal h1"></div>
+  <div class="carril vertical v2"></div>
+  <div class="carril horizontal h2"></div>
+
+</div>
+
+<div class="enzunchadora-rollos" onclick=" mostrarEquipo(event,'enzunchadora_rollos')"
+data-nombre="Enzunchadora Rollos">
+  <div class="nombre-equipo">Enzunchadora Rollos</div>
+  <div class="centro"></div>
+
+  <div class="brazo b1"></div>
+  <div class="brazo b2"></div>
+  <div class="brazo b3"></div>
+  <div class="brazo b4"></div>
+
+</div>
+
+
+<div class="elevador">
+
+  <div class="riel2 riel2-izq"></div>
+  <div class="riel2 riel2-der"></div>
+
+  <div class="plataforma-elevador"></div>
+
+</div>
+
+<div class="recepcion-rollos"></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div><!-- FIN escena -->
+</div><!-- FIN PLANTA -->
+</div><!-- FIN viewpoer -->
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- PANEL INFERIOR -->
+<div id="overlay" class="overlay"></div>
+
+<div id="panel" class="panel">
+  <div class="panel-contenido">
+    <button class="cerrar" onclick="cerrarPanel()">✖</button>
+
+<div class="panel-header">
+  <h2 id="titulo-equipo">Equipo</h2>
+
+ <div class="panel-tabs">
+    <button onclick="mostrarTareas(); activarTab(this)" class="activa">Tareas</button>
+    <button onclick="mostrarParametros(); activarTab(this)">Parámetros</button>
+  </div>
+</div>
+
+<div id="contenedor-tareas"></div>
+
+<div id="contenedor-parametros" ></div>
+  </div>
+
+</div>
+
+</div>
+
+<script src="app.js"></script>
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
+
+
+
