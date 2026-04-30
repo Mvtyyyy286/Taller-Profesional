@@ -9,7 +9,7 @@
 
 <body>
 <header class="encabezado">
-  <img src="Logo-aza2.png" alt="Logo AZA" class="logo-empresa">
+  <img src="logo-aza2.png" alt="Logo AZA" class="logo-empresa">
   <div class="titulo">
     <h1>Área de Laminación</h1>
     <p>Mapa interactivo del proceso productivo y seguridad </p>
@@ -71,7 +71,7 @@
 <!-- HORNO -->
 <div class="equipo horno-recalentamiento"
      onclick="mostrarEquipo(event,'horno')"
-     data-nombre="horno">
+     data-nombre="Horno">
 
   <!-- CARRIL DE ENTRADA -->
   <div  class="carril-entrada-horno"
@@ -944,8 +944,7 @@ onclick="mostrarEquipo(event,'caja_agua_3')">
    <div class="tubo-guia"></div>
   <div class="tubo-guia"></div>
    <div class="tubo-guia"></div>
-  <div class="tubo-guia"></div>
-   <div class="tubo-guia"></div>
+
   
 </div>
 
@@ -964,6 +963,21 @@ onclick="mostrarEquipo(event,'arrastrador_7')">
 </div>
 </div>
 
+<div class="equipo arrastrador-8"
+  onclick="mostrarEquipo(event,'arrastrador_8')"
+  data-nombre="Arrastrador 8"
+  style="left:5420px; top:552px">
+
+  <div class="nombre-equipo">Arrastrador 8</div>
+
+  <div class="jaula">
+    <span></span>
+    <span></span>
+  </div>
+
+</div>
+
+
 <div class="equipo formador-espiras"
 onclick="mostrarEquipo(event,'formador_espiras')"
 data-nombre="Formador de Espiras">
@@ -977,15 +991,20 @@ data-nombre="Formador de Espiras">
 </div>
 
 
-<div class="stelmor">
-
+<div class="stelmor"
+onclick="mostrarEquipo(event,'stelmor')"
+data-nombre="stelmor">
+<div class="nombre-equipo">Stelmor</div>
   <div class="rodillos-stelmor"></div>
 
   <div class="espiras-stelmor">
   
   </div>
 
-  <div class="colectordeespiras">
+  <div class="colectordeespiras"
+  onclick="mostrarEquipo(event,'colector_espiras')"
+     data-nombre="Colector de Espiras">
+
     <div class="espira-cabezal"></div>
     <div class="cabezal-colector">
       
@@ -1099,8 +1118,6 @@ data-nombre="Frenacolas">
 <div class="equipo parrilla-enfriamiento"
      onclick="mostrarEquipo(event,'parrilla_enfriamiento')"
      data-nombre="Parrilla de Enfriamiento">
-
-
 <div class="nombre-equipo">Parrilla de Enfriamiento</div>
 
 <div class="parrilla-grid">
@@ -1179,10 +1196,7 @@ data-nombre="Frenacolas">
 
 </div>
 
-<div class="colector">
-
-</div>
-
+<div class="colector"></div>
 
 <div class="selector-producto-mapa">
 
@@ -1260,7 +1274,7 @@ data-nombre="Frenacolas">
 
 </div>
 
-<div class="cizalla-frio" onclick="mostrarEquipo(event,'ccf')"
+<div class="cizalla-frio" onclick="mostrarEquipo(event,'Cizalla Corte Frío')"
 data-nombre="Cizalla Corte Frío">
 
   <div class="cizalla-frio-cuerpo"></div>
@@ -1398,17 +1412,117 @@ data-nombre="Enzunchadora Rollos">
 
 
 
+<div class="contenedor-proceso">
 
+  <!-- PROVEEDORES -->
+  <div class="tarjeta">
+    <div class="header verde">
+      <span class="icono">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 7h13v10H3z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16 10h4l1 2v5h-5z"/>
+        </svg>
+      </span>
+      <span>PROVEEDORES</span>
+    </div>
+    <ul>
+      <li>Acería AZA Colina</li>
+      <li>Mantención</li>
+      <li>Logística</li>
 
+    </ul>
+  </div>
 
+  <div class="flecha">→</div>
 
+  <!-- ENTRADA -->
+  <div class="tarjeta">
+    <div class="header verde">
+      <span class="icono">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5L12 3 3.75 7.5M20.25 7.5v9l-8.25 4.5M20.25 7.5L12 12m0 0L3.75 7.5M12 12v9"/>
+        </svg>
+      </span>
+      <span>ENTRADA DE MATERIAL</span>
+    </div>
+    <ul>
+      <li>Palanquilla</li>
+      <li>Energía</li>
+      <li>Lubricantes</li>
+    </ul>
+  </div>
 
+  <div class="flecha">→</div>
 
+  <!-- PROCESO -->
+  <div class="tarjeta proceso">
+    <div class="header azul">
+      <span class="icono">
+   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12a7.5 7.5 0 0 0 15 0m-15 0a7.5 7.5 0 1 1 15 0m-15 0H3m16.5 0H21m-1.5 0H12m-8.457 3.077 1.41-.513m14.095-5.13 1.41-.513M5.106 17.785l1.15-.964m11.49-9.642 1.149-.964M7.501 19.795l.75-1.3m7.5-12.99.75-1.3m-6.063 16.658.26-1.477m2.605-14.772.26-1.477m0 17.726-.26-1.477M10.698 4.614l-.26-1.477M16.5 19.794l-.75-1.299M7.5 4.205 12 12m6.894 5.785-1.149-.964M6.256 7.178l-1.15-.964m15.352 8.864-1.41-.513M4.954 9.435l-1.41-.514M12.002 12l-3.75 6.495" />
+</svg>
 
+      </span>
+      <span>PROCESO DE LAMINACIÓN</span>
+    </div>
 
+    <div class="columnas">
+      <div>
+        <strong>Barras</strong>
+        <ul>
+          <li>Tren laminación</li>
+          <li>Corte</li>
+        </ul>
+      </div>
+      <div>
+        <strong>Rollos</strong>
+        <ul>
+          <li>Formado</li>
+          <li>Enfriado</li>
+        </ul>
+      </div>
+    </div>
+  </div>
 
+  <div class="flecha">→</div>
 
+  <!-- SALIDA -->
+  <div class="tarjeta">
+    <div class="header verde">
+      <span class="icono">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5L12 3l9 4.5M3 7.5v9L12 21m0-9 9-4.5M12 12v9"/>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12h4.5m0 0-2.25-2.25M21 12l-2.25 2.25"/>
+        </svg>
+      </span>
+      <span>SALIDA DE PRODUCTOS</span>
+    </div>
+    <ul>
+      <li>Barras</li>
+      <li>Rollos</li>
+      <li>Subproductos</li>
+    </ul>
+  </div>
 
+  <div class="flecha">→</div>
+
+  <!-- CLIENTES -->
+  <div class="tarjeta">
+    <div class="header verde">
+      <span class="icono">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-12 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0ZM6 18.75a3 3 0 0 1 6 0M18 18.75a3 3 0 0 0-6 0"/>
+        </svg>
+      </span>
+      <span>CLIENTES</span>
+    </div>
+    <ul>
+      <li>Logística</li>
+      <li>Cliente externo</li>
+    </ul>
+  </div>
+
+</div>
 
 
 

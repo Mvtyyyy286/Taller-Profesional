@@ -21,9 +21,7 @@ function normalizarID(nombre){
 const X_ENZUNCHADO = posXActual - 100;
 const X_SALIDA = posXActual - 1000;
 
-const pdfs = {
-  "Encendido del Horno": "https://aza.greendocs.net/Arquivo/VisualizarPDF?idArquivo=26808&view=true&idBPMInstancia=54840&idRevisao=26808&fileName=PO-LAM2-026%20Listado%20de%20telefonos%20de%20emergencia.pdf&_p=1"
-};
+
 
 let filtroCriticidad = null;
 let equipoActual = null;
@@ -100,16 +98,12 @@ fetch("riesgos.json")
   });
 
 function agruparPorEquipo(filas) {
-console.log("PRIMERA FILA:", filas[0]);
 
   const resultado = {};
 
   filas.forEach(f => {
- console.log("FILA COMPLETA:", f);
-const equipo = normalizarID(f.Equipo); // 🔥 clave
 
-console.log("EQUIPO DETECTADO:", equipo);
-
+    const equipo = normalizarID(f.Equipo);
     const actividad = f.Actividad;
     const dimension = f.Dimension;
     const total = Number(f.Total) || 0;
@@ -120,8 +114,14 @@ console.log("EQUIPO DETECTADO:", equipo);
       resultado[equipo][actividad] = {
         nombre: actividad,
         dimensiones: {},
-        maxTotal: 0
+        maxTotal: 0,
+        pdf: f.PDF || null   // 👈 consistente
       };
+    }
+
+    // mantener PDF si aparece después
+    if (!resultado[equipo][actividad].pdf && f.PDF) {
+      resultado[equipo][actividad].pdf = f.PDF;
     }
 
     resultado[equipo][actividad].dimensiones[dimension] = total;
@@ -138,7 +138,8 @@ console.log("EQUIPO DETECTADO:", equipo);
     resultado[equipo] = Object.values(resultado[equipo]).map(t => ({
       nombre: t.nombre,
       dimensiones: t.dimensiones,
-      criticidad: nivelCriticidad(t.maxTotal)
+      criticidad: nivelCriticidad(t.maxTotal),
+      pdf: t.pdf || null   // 👈 NO se pierde el PDF
     }));
 
   });
@@ -196,6 +197,7 @@ function mostrarEquipo(e, id){
   const tareas = tareasPorEquipo[idReal] || [];
 
   // tareas
+  console.log(tareas);
   contenedor.innerHTML = renderTareas(tareas);
 
   // parámetros
@@ -225,6 +227,14 @@ function mostrarEquipo(e, id){
 
   // 🔥 estado inicial SIEMPRE
   mostrarTareas();
+  const tabs = document.querySelectorAll(".panel-tabs button");
+
+tabs.forEach(b => b.classList.remove("activa"));
+
+// activar el de tareas (primer botón)
+if(tabs[0]){
+  tabs[0].classList.add("activa");
+}
 }
 
 
@@ -336,6 +346,17 @@ function renderTareas(tareas){
             
             <div class="tarea-nombre">
               ${t.nombre}
+             ${t.pdf ? `
+  <a 
+    href="${t.pdf}" 
+    target="_blank"
+    class="pdf-cta"
+    title="Ver procedimiento"
+  >
+    📄 Ver procedimiento
+  </a>
+` : ""}
+
             </div>
 
             <div class="tarea-dimensiones">
@@ -989,9 +1010,19 @@ function convertirEnRollo(espira){
 
   espira.style.width = "80px";
   espira.style.height = "80px";
-  espira.style.background = "#6b6b6b";
-  espira.style.borderRadius = "50%";
-  espira.style.zIndex = "9999";
+espira.style.background = `
+  radial-gradient(
+    circle,
+    transparent 52%,
+    #b8b8b8 54%,
+    #d9d9d9 62%,
+    #8f8f8f 70%,
+    transparent 72%
+  )
+`;
+
+  espira.style.borderRadius = "100%";
+  espira.style.zIndex = "10";
 
   setTimeout(() => {
 
@@ -1002,10 +1033,10 @@ function convertirEnRollo(espira){
       { x: 710, t: 5000 },
       { pausa: true, t: 1000 },
 
-      { y: -803, t: 16000 },
+      { y: -802, t: 16000 },
       { pausa: true, t: 1000 },
 
-      { x: -230, t: 1000 },
+      { x: -233, t: 1000 },
 
       { pausa: true, t: 2500, enzunchar: true },
 
