@@ -87,7 +87,7 @@ if(tipo === "de_producto"){
   return resultado;
 }
 
-fetch("riesgos.json")
+fetch("Riesgos.json")
   .then(res => res.json())
   .then(datos => {
     tareasPorEquipo = agruparPorEquipo(datos);
