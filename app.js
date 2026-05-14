@@ -38,7 +38,7 @@ fetch("parametros.json")
     console.log("JSON parametros:", datos);
 
     parametrosPorEquipo = agruparParametros(datos);
-
+actualizarDashboardParametros();
     console.log("Parametros agrupados:", parametrosPorEquipo);
 
   })
@@ -49,44 +49,83 @@ function agruparParametros(filas){
   const resultado = {};
 
   filas.forEach(p => {
-console.log("TIPO REAL:", JSON.stringify(p.Tipo));
-    const equipo = normalizarID(p.Equipo);
 
-   // 🔥 clave
+    const equipo = normalizarID(p.Equipo);
 
     if(!resultado[equipo]){
       resultado[equipo] = {
-        producto: p.ProductoProceso,
-        critico: [],
-        no_controlado: [],
+        productoProceso: p.ProductoProceso,       
         controlado: [],
-        producto_param: []
+        no_controlado: [],
+        producto: [],
+        ruido: []
       };
     }
 
-const tipo = normalizarID(p.Tipo);
+    const parametro = {
+      nombre: p.Parametros,
+      critico: p.Critico,
+      como: p.Como,
+      donde: p.Donde,
+      variables: p.Variables
+    };
 
-if(tipo === "critico"){
-  resultado[equipo].critico.push(p.Parametros);
+    const tipo = normalizarID(p.Tipo);
+
+    if(tipo === "controlado"){
+      resultado[equipo].controlado.push(parametro);
+    }
+
+    if(tipo === "no_controlado"){
+      resultado[equipo].no_controlado.push(parametro);
+    }
+
+  if(tipo === "producto" || tipo === "de_producto"){
+  resultado[equipo].producto.push(parametro);
 }
 
-if(tipo === "ruido"){
-  resultado[equipo].no_controlado.push(p.Parametros);
-}
-
-if(tipo === "controlado"){
-  resultado[equipo].controlado.push(p.Parametros);
-}
-
-if(tipo === "de_producto"){
-  resultado[equipo].producto_param.push(p.Parametros);
-}
+    if(tipo === "ruido"){
+      resultado[equipo].ruido.push(parametro);
+    }
 
   });
 
   return resultado;
 }
+function actualizarDashboardParametros(){
 
+  let controlados = 0;
+  let producto = 0;
+  let ruido = 0;
+  let criticos = 0;
+
+  Object.values(parametrosPorEquipo).forEach(equipo => {
+
+    controlados += equipo.controlado.length;
+    producto += equipo.producto.length;
+    ruido += equipo.ruido.length;
+
+    const todos = [
+      ...equipo.controlado,
+      ...equipo.no_controlado,
+      ...equipo.producto,
+      ...equipo.ruido
+    ];
+
+    todos.forEach(p => {
+      if(normalizarID(p.critico) === "si"){
+        criticos++;
+      }
+    });
+
+  });
+
+  document.getElementById("kpi-param-controlados").innerText = controlados;
+  document.getElementById("kpi-param-producto").innerText = producto;
+  document.getElementById("kpi-param-ruido").innerText = ruido;
+  document.getElementById("kpi-param-criticos").innerText = criticos;
+
+}
 fetch("Riesgos.json")
   .then(res => res.json())
   .then(datos => {
@@ -150,7 +189,7 @@ function agruparPorEquipo(filas) {
 function nivelCriticidad(total) {
 
   if (total >= 12) return "alta";
-  if (total >= 6) return "media";
+  if (total >= 3) return "media";
   return "baja";
 
 }
@@ -194,6 +233,8 @@ function mostrarEquipo(e, id){
 
   titulo.innerText = nombre;
 
+  
+
   const tareas = tareasPorEquipo[idReal] || [];
 
   // tareas
@@ -201,26 +242,82 @@ function mostrarEquipo(e, id){
   contenedor.innerHTML = renderTareas(tareas);
 
   // parámetros
-  const params = parametrosPorEquipo[idReal];
+const params = parametrosPorEquipo[idReal];
 
-  if(params){
-    contenedorParametros.innerHTML = `
-      <div class="param-grupo">
-        <h4>🔴 Críticos (${params.critico.length})</h4>
-        ${params.critico.map(p => `<div class="param-item critico">${p}</div>`).join("")}
+const productoProcesoPanel = document.getElementById("producto-proceso-panel");
+
+if(productoProcesoPanel){
+  productoProcesoPanel.innerText =
+    params?.productoProceso || "No definido";
+}
+if(params){
+
+  function esCritico(p){
+    return normalizarID(p.critico) === "si";
+  }
+
+  function contarCriticos(lista){
+    return lista.filter(esCritico).length;
+  }
+
+function badgeCriticos(lista){
+  const total = contarCriticos(lista);
+
+  if(total === 0) return "";
+
+  return `
+    <span 
+      class="badge-criticos"
+      onclick="event.stopPropagation(); filtrarCriticosFamilia(this)"
+      title="Ver solo críticos"
+    > ${total}
+    </span>
+  `;
+}
+
+  function renderParametros(lista, clase){
+
+    return lista.map(p => `
+
+      <div class="param-item ${clase} ${esCritico(p) ? "critico" : ""}" onclick="toggleParametro(this)">
+
+        <div class="param-titulo">
+          ${esCritico(p) ? "🔴" : "⚪"}
+          ${p.nombre}
+        </div>
+
+        <div class="param-detalle">
+          <div><strong>Cómo:</strong> ${p.como || "-"}</div>
+          <div><strong>Dónde:</strong> ${p.donde || "-"}</div>
+          <div><strong>Variables:</strong> ${p.variables || "-"}</div>
+        </div>
+
       </div>
 
-      <div class="param-grupo">
-        <h4>🟢 Controlados (${params.controlado.length})</h4>
-        ${params.controlado.map(p => `<div class="param-item controlado">${p}</div>`).join("")}
-      </div>
+    `).join("");
 
+  }
+
+  function renderFamilia(titulo, lista, clase){
+    return `
       <div class="param-grupo">
-        <h4>🟡 Producto (${params.producto_param.length})</h4>
-        ${params.producto_param.map(p => `<div class="param-item producto">${p}</div>`).join("")}
+        <h4>
+          <span>${titulo} (${lista.length})</span>
+          ${badgeCriticos(lista)}
+        </h4>
+
+        ${renderParametros(lista, clase)}
       </div>
     `;
   }
+
+  contenedorParametros.innerHTML = `
+    ${renderFamilia("🟢 Controlados", params.controlado, "controlado")}
+    ${renderFamilia("🔵 No Controlados", params.no_controlado, "no-controlado")}
+    ${renderFamilia("🟡 Producto", params.producto, "producto")}
+    ${renderFamilia("🟣 Ruido", params.ruido, "ruido")}
+  `;
+}
 
   panel.classList.add("abierto");
   overlay.classList.add("activo");
@@ -237,7 +334,13 @@ if(tabs[0]){
 }
 }
 
+function filtrarCriticosFamilia(badge){
 
+  const grupo = badge.closest(".param-grupo");
+
+  grupo.classList.toggle("solo-criticos");
+
+}
 
 const tabs = document.querySelectorAll('.panel-tabs button');
 
@@ -265,7 +368,18 @@ function mostrarParametros(){
   document.getElementById("contenedor-parametros").style.display = "grid";
 }
 
+function compensarZoomPanel(){
 
+  const panel = document.getElementById("panel");
+  if(!panel) return;
+
+  const escala = window.innerWidth / window.screen.availWidth;
+
+  panel.style.setProperty("--panel-scale", escala);
+}
+
+window.addEventListener("resize", compensarZoomPanel);
+compensarZoomPanel();
 
 
 
@@ -326,6 +440,101 @@ function contarCriticidades(tareas) {
   );
 
 }
+
+function actualizarDashboardTareas(){
+
+  let total = 0;
+  let altas = 0;
+  let medias = 0;
+  let bajas = 0;
+
+  const criticosPorEquipo = {};
+
+  Object.entries(tareasPorEquipo).forEach(([equipo, tareas]) => {
+
+    tareas.forEach(t => {
+
+      total++;
+
+      if(t.criticidad === "alta"){
+        altas++;
+        criticosPorEquipo[equipo] = (criticosPorEquipo[equipo] || 0) + 1;
+      }
+
+      if(t.criticidad === "media") medias++;
+      if(t.criticidad === "baja") bajas++;
+
+    });
+
+  });
+
+  document.getElementById("kpi-total-tareas").innerText = total;
+  document.getElementById("kpi-altas").innerText = altas;
+  document.getElementById("kpi-medias").innerText = medias;
+  document.getElementById("kpi-bajas").innerText = bajas;
+
+  const lista = document.getElementById("lista-equipos-criticos");
+
+  const topEquipos = Object.entries(criticosPorEquipo)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3);
+
+  lista.innerHTML = topEquipos.map(([equipo, cantidad]) => `
+    <div class="equipo-critico">
+      <span>${equipo.replaceAll("_", " ")}</span>
+      <strong>${cantidad}</strong>
+    </div>
+  `).join("");
+
+  const max = Math.max(altas, medias, bajas, 1);
+
+  document.getElementById("grafico-altas").style.width = `${(altas / max) * 100}%`;
+  document.getElementById("grafico-medias").style.width = `${(medias / max) * 100}%`;
+  document.getElementById("grafico-bajas").style.width = `${(bajas / max) * 100}%`;
+
+  document.getElementById("grafico-altas-num").innerText = altas;
+  document.getElementById("grafico-medias-num").innerText = medias;
+  document.getElementById("grafico-bajas-num").innerText = bajas;
+
+console.log("GRAFICO:", altas, medias, bajas);
+
+const ga = document.querySelector("#grafico-altas");
+const gm = document.querySelector("#grafico-medias");
+const gb = document.querySelector("#grafico-bajas");
+
+const na = document.querySelector("#grafico-altas-num");
+const nm = document.querySelector("#grafico-medias-num");
+const nb = document.querySelector("#grafico-bajas-num");
+
+console.log("ELEMENTOS:", ga, gm, gb, na, nm, nb);
+
+if(ga && gm && gb && na && nm && nb){
+
+  const max = Math.max(altas, medias, bajas, 1);
+
+  ga.style.width = ((altas / max) * 100) + "%";
+  gm.style.width = ((medias / max) * 100) + "%";
+  gb.style.width = ((bajas / max) * 100) + "%";
+
+  na.textContent = altas;
+  nm.textContent = medias;
+  nb.textContent = bajas;
+}
+
+
+}
+
+fetch("Riesgos.json")
+  .then(res => res.json())
+  .then(datos => {
+
+    tareasPorEquipo = agruparPorEquipo(datos);
+    actualizarDashboardTareas();
+
+  })
+
+
+
 
 
 function renderTareas(tareas){
@@ -490,6 +699,7 @@ function crearPiezas(){
     planta.appendChild(pieza);
   }
 }
+
 
 
 // ================== CIERRE PANEL ==================

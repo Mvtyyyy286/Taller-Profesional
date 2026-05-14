@@ -9,9 +9,9 @@
 
 <body>
 <header class="encabezado">
-  <img src="Logo-aza2.png" alt="Logo AZA" class="logo-empresa">
+  <img src="logo-aza2.png" alt="Logo AZA" class="logo-empresa">
   <div class="titulo">
-    <h1>Área de Laminación</h1>
+    <h1>Área de Laminación Colina</h1>
     <p>Mapa interactivo del proceso productivo y seguridad </p>
   </div>
 </header>
@@ -861,7 +861,7 @@ onclick="mostrarEquipo(event,'caja_agua_7')">
 <div class="equipo caja-subida-agua"
 onclick="mostrarEquipo(event,'caja_agua_8')">
 
-<div class="nombre-equipo">Caja Agua N°8</div>
+<div class="nombre-equipo">caja_agua_8</div>
 
 </div>
  <div class="tubo-guia"></div>
@@ -923,28 +923,55 @@ onclick="mostrarEquipo(event,'caja_agua_3')">
 <div class="nombre-equipo">Caja Agua N°3</div>
 
 </div>
-  <div class="tubo-guia"></div>
-  <div class="tubo-guia"></div>
-   <div class="tubo-guia"></div>
-  <div class="tubo-guia"></div>
-   <div class="tubo-guia"></div>
-  <div class="tubo-guia"></div>
-   <div class="tubo-guia"></div>
-  <div class="tubo-guia"></div>
-    <div class="tubo-guia"></div>
-  <div class="tubo-guia"></div>
-   <div class="tubo-guia"></div>
-  <div class="tubo-guia"></div>
-   <div class="tubo-guia"></div>
-  <div class="tubo-guia"></div>
-   <div class="tubo-guia"></div>
-  <div class="tubo-guia"></div>
-    <div class="tubo-guia"></div>
-  <div class="tubo-guia"></div>
-   <div class="tubo-guia"></div>
-  <div class="tubo-guia"></div>
-   <div class="tubo-guia"></div>
 
+<div class="equipo traslacion-alambron"
+onclick="mostrarEquipo(event,'traslacion_alambron')"
+style="
+position:absolute;
+left:640px;
+top:0px;
+"
+>
+
+  <div class="nombre-equipo"
+  style="
+  position:absolute;
+  top:-20px;
+  left:350px;
+  transform:translateX(-50%);
+  white-space:nowrap;
+  "
+  >
+    Traslación Alambron
+  </div>
+
+  <div class="tunel-tubos">
+
+    <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+
+    <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+
+  </div>
+
+</div>
   
 </div>
 
@@ -1001,6 +1028,10 @@ data-nombre="stelmor">
   
   </div>
 
+
+
+</div>
+
   <div class="colectordeespiras"
   onclick="mostrarEquipo(event,'colector_espiras')"
      data-nombre="Colector de Espiras">
@@ -1010,9 +1041,6 @@ data-nombre="stelmor">
       
     </div>
   </div>
-
-</div>
-
 
 <div class="jaula-delimitador modo-doble">
 <div class="selector-modo">
@@ -1025,7 +1053,9 @@ data-nombre="stelmor">
 
 </div>
   <!-- guía que mueve la barra (desviador real) -->
-  <div class="canal-guia canal-jaula"></div>
+  <div class="canal-guia canal-jaula"
+       onclick="mostrarEquipo(event,'Desviador_1')"
+       data-nombre="Desviador 1"></div>
 
   <!-- Cizalla CVS7 -->
   <div class="equipo cizalla cizalla-cvs7"
@@ -1063,37 +1093,52 @@ data-nombre="stelmor">
 
 </div>
 
+<div class="equipo traslacion-cvs7"
+onclick="mostrarEquipo(event,'traslacion_doble')">
 
-<div class="tunel-tubos tunel-cvs7-superior">
+  <div class="nombre-equipo"
+  style="
+position:absolute;
+top:30px;
+left:5300px;
+transform:translateX(-50%);
+white-space:nowrap;
+"
+>
+    Traslación Doble
+  
+  </div>
 
-  <div class="tubo-guia"></div>
-  <div class="tubo-guia"></div>
-  <div class="tubo-guia"></div>
-  <div class="tubo-guia"></div>
-  <div class="tubo-guia"></div>
-  <div class="tubo-guia"></div>
-  <div class="tubo-guia"></div>
-  <div class="tubo-guia"></div>
-  <div class="tubo-guia"></div>
-  <div class="tubo-guia"></div>
+  <div class="tunel-tubos tunel-cvs7-superior">
+    <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+  </div>
+
+  <div class="tunel-tubos tunel-cvs7-inferior">
+    <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+    <div class="tubo-guia"></div>
+  </div>
 
 </div>
 
-<div class="tunel-tubos tunel-cvs7-inferior">
-
-  <div class="tubo-guia"></div>
-  <div class="tubo-guia"></div>
-  <div class="tubo-guia"></div>
-  <div class="tubo-guia"></div>
-  <div class="tubo-guia"></div>
-  <div class="tubo-guia"></div>
-  <div class="tubo-guia"></div>
-  <div class="tubo-guia"></div>
-  <div class="tubo-guia"></div>
-  <div class="tubo-guia"></div>
 
 
-</div>
 
 <div class="equipo frenacolas"
 onclick="mostrarEquipo(event,'frenacolas')"
@@ -1118,6 +1163,7 @@ data-nombre="Frenacolas">
 <div class="equipo parrilla-enfriamiento"
      onclick="mostrarEquipo(event,'parrilla_enfriamiento')"
      data-nombre="Parrilla de Enfriamiento">
+
 <div class="nombre-equipo">Parrilla de Enfriamiento</div>
 
 <div class="parrilla-grid">
@@ -1201,15 +1247,15 @@ data-nombre="Frenacolas">
 <div class="selector-producto-mapa">
 
   <button onclick="setProducto('gruesa')" class="btn-prod">
-    Barra Gruesa
+    Barra Gruesa 18 a 32 mm
   </button>
 
   <button onclick="setProducto('delgada')" class="btn-prod">
-    Barra Delgada
+    Barra Delgada 8 a 16 mm
   </button>
 
   <button onclick="setProducto('rollo')" class="btn-prod">
-    Rollo
+    Rollo/Alambron
   </button>
 
 </div>
@@ -1416,9 +1462,12 @@ data-nombre="Enzunchadora Rollos">
 <div class="bloque-negocio">
 
   <!-- TÍTULO -->
-  <div class="definicion">
-    DEFINICIÓN DEL NEGOCIO
-  </div>
+  <div class="definicion-header">
+  DEFINICIÓN DEL NEGOCIO
+</div>
+
+  <div class="linea-negocio">
+
 <div class="bloque-relaciones">
 
   <div class="rel-header proveedor-header">PROVEEDORES</div>
@@ -1492,6 +1541,7 @@ data-nombre="Enzunchadora Rollos">
   </div>
 
 </div>
+
 <div class="proceso-laminacion">
 
   <div class="proceso-header">
@@ -1602,11 +1652,114 @@ Sub-Gerente (1) · Asesor técnico (1) · Jefes de célula (4) ·Ingeniero de pr
   </div>
 
 </div>
-
+</div>
 </div>
 
+<div class="dashboard-operacional">
 
+  <div class="dashboard-tareas">
 
+    <div class="dashboard-header">
+      📋 Gestión Operacional
+    </div>
+
+    <div class="kpi-grid">
+
+      <div class="kpi-card total">
+        <span class="kpi-numero" id="kpi-total-tareas">0</span>
+        <span class="kpi-label">Tareas</span>
+      </div>
+
+      <div class="kpi-card altas">
+        <span class="kpi-numero" id="kpi-altas">0</span>
+        <span class="kpi-label">Altas</span>
+      </div>
+
+      <div class="kpi-card medias">
+        <span class="kpi-numero" id="kpi-medias">0</span>
+        <span class="kpi-label">Medias</span>
+      </div>
+
+      <div class="kpi-card bajas">
+        <span class="kpi-numero" id="kpi-bajas">0</span>
+        <span class="kpi-label">Bajas</span>
+      </div>
+
+    </div>
+
+    <div class="dashboard-secundario">
+
+      <div class="equipos-criticos">
+        <h4>⚠️ Equipos Críticos</h4>
+        <div id="lista-equipos-criticos"></div>
+      </div>
+
+      <div class="dashboard-grafico">
+        <h4>Distribución de Criticidad</h4>
+
+        <div class="dash-row">
+          <span>🔴 Altas</span>
+          <div class="dash-track">
+            <div class="dash-fill dash-alta" id="grafico-altas"></div>
+          </div>
+          <strong id="grafico-altas-num">0</strong>
+        </div>
+
+        <div class="dash-row">
+          <span>🟡 Medias</span>
+          <div class="dash-track">
+            <div class="dash-fill dash-media" id="grafico-medias"></div>
+          </div>
+          <strong id="grafico-medias-num">0</strong>
+        </div>
+
+        <div class="dash-row">
+          <span>🟢 Bajas</span>
+          <div class="dash-track">
+            <div class="dash-fill dash-baja" id="grafico-bajas"></div>
+          </div>
+          <strong id="grafico-bajas-num">0</strong>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="dashboard-parametros">
+
+    <div class="dashboard-header">
+      🔧 Control de Parámetros
+    </div>
+
+    <div class="param-kpi-grid">
+
+      <div class="param-kpi-card controlado">
+        <span class="kpi-numero" id="kpi-param-controlados">0</span>
+        <span class="kpi-label">Controlados</span>
+      </div>
+
+      <div class="param-kpi-card producto">
+        <span class="kpi-numero" id="kpi-param-producto">0</span>
+        <span class="kpi-label">Producto</span>
+      </div>
+
+      <div class="param-kpi-card ruido">
+        <span class="kpi-numero" id="kpi-param-ruido">0</span>
+        <span class="kpi-label">Ruido</span>
+      </div>
+
+      <div class="param-kpi-card critico">
+        <span class="kpi-numero" id="kpi-param-criticos">0</span>
+        <span class="kpi-label">Críticos</span>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
 
 
 
@@ -1623,24 +1776,6 @@ Sub-Gerente (1) · Asesor técnico (1) · Jefes de célula (4) ·Ingeniero de pr
 
 </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <!-- PANEL INFERIOR -->
 <div id="overlay" class="overlay"></div>
 
@@ -1649,12 +1784,20 @@ Sub-Gerente (1) · Asesor técnico (1) · Jefes de célula (4) ·Ingeniero de pr
     <button class="cerrar" onclick="cerrarPanel()">✖</button>
 
 <div class="panel-header">
-  <h2 id="titulo-equipo">Equipo</h2>
 
- <div class="panel-tabs">
+  <div class="panel-titulo-equipo">
+    <h2 id="titulo-equipo">Equipo</h2>
+
+    <span class="producto-panel">
+      Producto en proceso: <strong id="producto-proceso-panel">-</strong>
+    </span>
+  </div>
+
+  <div class="panel-tabs">
     <button onclick="mostrarTareas(); activarTab(this)" class="activa">Tareas</button>
     <button onclick="mostrarParametros(); activarTab(this)">Parámetros</button>
   </div>
+
 </div>
 
 <div id="contenedor-tareas"></div>
