@@ -1011,20 +1011,20 @@ z-index:5;
 
 /* LOGO */
 .logo-empresa {
-  height: 70px;      /* tamaño controlado */
+  height: 200px;      /* tamaño controlado */
   width: auto;
 }
 
 /* TÍTULO */
 .encabezado .titulo h1 {
   margin: 0;
-  font-size: 30px;
+  font-size: 110px;
 
 }
 
 .encabezado .titulo p {
   margin: 0;
-  font-size: 20px;
+  font-size: 70px;
   color: #555;
 }
 
@@ -2041,7 +2041,7 @@ z-index:5;
   z-index:50;
 }
 
-.monobloque{
+.monoblock{
   position:absolute;
 
   left:3565px;
@@ -2117,7 +2117,7 @@ z-index:5;
 }
 
 /* GUÍA FIJA */
-.guia-desviador-monobloque{
+.guia-desviador-monoblock{
   position:absolute;
 
   left:3918px;   /* salida del monobloque */
@@ -2133,7 +2133,7 @@ z-index:5;
 }
 
 /* BRAZO MÓVIL */
-.brazo-desviador-monobloque{
+.brazo-desviador-monoblock{
   position:absolute;
 
   left:3972px;
@@ -2154,7 +2154,7 @@ z-index:5;
 }
 
 /* PIVOTE */
-.brazo-desviador-monobloque::before{
+.brazo-desviador-monoblock::before{
   content:"";
   position:absolute;
 
@@ -2171,7 +2171,7 @@ z-index:5;
 }
 
 /* ANIMACIÓN */
-@keyframes mover-desviador-monobloque{
+@keyframes mover-desviador-monoblock{
 
   0%{
     transform:rotate(-30deg);   /* hacia arriba */
@@ -2544,7 +2544,7 @@ z-index: 2;
 .colectordeespiras{
   position:absolute;
 
-  right:679px;
+  right:680px;
   top: 588px;
 
   transform: translateY(-50%);
@@ -3494,7 +3494,7 @@ gap: 3;
   transform:rotate(0deg); /* arriba */
 }
 
-.prod-gruesa .brazo-desviador-monobloque{
+.prod-gruesa .brazo-desviador-monoblock{
   animation:none;
   transform:rotate(0deg); /* plano */
 }
@@ -3509,7 +3509,7 @@ gap: 3;
   transform:rotate(35deg); /* abajo */
 }
 
-.prod-delgada .brazo-desviador-monobloque{
+.prod-delgada .brazo-desviador-monoblock{
   animation:none;
   transform:rotate(-35deg); /* arriba */
 }
@@ -3524,7 +3524,7 @@ gap: 3;
   transform:rotate(35deg); /* igual que delgada */
 }
 
-.prod-rollo .brazo-desviador-monobloque{
+.prod-rollo .brazo-desviador-monoblock{
   animation:none;
   transform:rotate(0deg); /* abajo */
 }
@@ -3534,7 +3534,7 @@ gap: 3;
   transform:rotate(35deg); /* igual que delgada */
 }
 
-.prod-rollo .brazo-desviador-monobloque{
+.prod-rollo .brazo-desviador-monoblock{
   animation:none;
   transform:rotate(0deg); /* abajo */
 }
@@ -3692,7 +3692,7 @@ gap: 3;
 /* ========================= */
 
 .caja-agua,
-.monobloque,
+.monoblock,
 .parrilla-enfriamiento{
   z-index:4;
 }

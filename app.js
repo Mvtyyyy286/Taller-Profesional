@@ -106,9 +106,9 @@ function actualizarDashboardParametros(){
     ruido += equipo.ruido.length;
 
     const todos = [
+      ...equipo.producto,
       ...equipo.controlado,
       ...equipo.no_controlado,
-      ...equipo.producto,
       ...equipo.ruido
     ];
 
@@ -201,14 +201,14 @@ const mapaEquipos = {
   d5h: "tren_desbaste",
   d6v: "tren_desbaste",
 
-  d7h: "tren_medio",
-  d8v: "tren_medio",
-  d9h: "tren_medio",
-  d10v: "tren_medio",
-  d11h: "tren_medio",
-  d12v: "tren_medio",
-  d13h: "tren_medio",
-  d14v: "tren_medio"
+  d7h: "Tren_Medio",
+  d8v: "Tren_Medio",
+  d9h: "Tren_Medio",
+  d10v: "Tren_Medio",
+  d11h: "Tren_Medio",
+  d12v: "Tren_Medio",
+  d13h: "Tren_Medio",
+  d14v: "Tren_Medio"
 };
 
 // ================== PANEL ==================
@@ -289,7 +289,7 @@ function badgeCriticos(lista){
         <div class="param-detalle">
           <div><strong>Cómo:</strong> ${p.como || "-"}</div>
           <div><strong>Dónde:</strong> ${p.donde || "-"}</div>
-          <div><strong>Variables:</strong> ${p.variables || "-"}</div>
+  <div><strong>Variables:</strong> ${p.variables || "-"}</div> 
         </div>
 
       </div>
@@ -312,9 +312,9 @@ function badgeCriticos(lista){
   }
 
   contenedorParametros.innerHTML = `
+    ${renderFamilia("🟡 Producto", params.producto, "producto")}
     ${renderFamilia("🟢 Controlados", params.controlado, "controlado")}
     ${renderFamilia("🔵 No Controlados", params.no_controlado, "no-controlado")}
-    ${renderFamilia("🟡 Producto", params.producto, "producto")}
     ${renderFamilia("🟣 Ruido", params.ruido, "ruido")}
   `;
 }
