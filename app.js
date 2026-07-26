@@ -95,15 +95,25 @@ function agruparParametros(filas){
 function actualizarDashboardParametros(){
 
   let controlados = 0;
+  let noControlados = 0;
   let producto = 0;
   let ruido = 0;
   let criticos = 0;
+  let total = 0;
+  let criticosControlados = 0;
+  let criticosProducto = 0;
+  let criticosRuido = 0;
 
   Object.values(parametrosPorEquipo).forEach(equipo => {
 
     controlados += equipo.controlado.length;
+    noControlados += equipo.no_controlado.length;
     producto += equipo.producto.length;
     ruido += equipo.ruido.length;
+
+    criticosControlados += equipo.controlado.filter(p => normalizarID(p.critico) === "si").length;
+    criticosProducto += equipo.producto.filter(p => normalizarID(p.critico) === "si").length;
+    criticosRuido += equipo.ruido.filter(p => normalizarID(p.critico) === "si").length;
 
     const todos = [
       ...equipo.producto,
@@ -111,6 +121,8 @@ function actualizarDashboardParametros(){
       ...equipo.no_controlado,
       ...equipo.ruido
     ];
+
+    total += todos.length;
 
     todos.forEach(p => {
       if(normalizarID(p.critico) === "si"){
@@ -120,10 +132,52 @@ function actualizarDashboardParametros(){
 
   });
 
+  document.getElementById("kpi-param-total").innerText = total;
   document.getElementById("kpi-param-controlados").innerText = controlados;
   document.getElementById("kpi-param-producto").innerText = producto;
   document.getElementById("kpi-param-ruido").innerText = ruido;
   document.getElementById("kpi-param-criticos").innerText = criticos;
+  document.getElementById("kpi-param-controlados-criticos").innerText = criticosControlados;
+  document.getElementById("kpi-param-producto-criticos").innerText = criticosProducto;
+  document.getElementById("kpi-param-ruido-criticos").innerText = criticosRuido;
+
+  const porcentajeParametros = cantidad => total ? Math.round((cantidad / total) * 100) : 0;
+  const distribucionParametros = [
+    ["controlados", controlados],
+    ["no-controlados", noControlados],
+    ["producto", producto],
+    ["ruido", ruido]
+  ];
+
+  distribucionParametros.forEach(([tipo, cantidad]) => {
+    const porcentaje = porcentajeParametros(cantidad);
+    document.getElementById(`grafico-param-${tipo}`).style.width = `${porcentaje}%`;
+    document.getElementById(`grafico-param-${tipo}-num`).innerText = `${porcentaje}%`;
+  });
+
+  const equiposDelMapa = [...document.querySelectorAll("[data-nombre]")]
+    .filter(el => !el.classList.contains("formador-lazo"));
+  const equiposConParametros = equiposDelMapa.filter(el => {
+    const id = normalizarID(el.dataset.nombre);
+    const idReal = normalizarID(mapaEquipos[id] || id);
+    const parametros = parametrosPorEquipo[idReal];
+    return parametros && (
+      parametros.controlado.length +
+      parametros.no_controlado.length +
+      parametros.producto.length +
+      parametros.ruido.length
+    ) > 0;
+  }).length;
+  const totalEquipos = equiposDelMapa.length;
+  const porcentajeConParametros = totalEquipos ? Math.round((equiposConParametros / totalEquipos) * 100) : 0;
+  const porcentajeSinParametros = 100 - porcentajeConParametros;
+  const equiposSinParametros = totalEquipos - equiposConParametros;
+
+  document.getElementById("cobertura-param-total-equipos").innerText = `${totalEquipos} equipos`;
+  document.getElementById("cobertura-param-con").style.width = `${porcentajeConParametros}%`;
+  document.getElementById("cobertura-param-sin").style.width = `${porcentajeSinParametros}%`;
+  document.getElementById("cobertura-param-con-num").innerText = `${porcentajeConParametros}% (${equiposConParametros})`;
+  document.getElementById("cobertura-param-sin-num").innerText = `${porcentajeSinParametros}% (${equiposSinParametros})`;
 
 }
 fetch("Riesgos.json")
@@ -218,6 +272,7 @@ const mapaEquipos = {
 function mostrarEquipo(e, id){
 
   const el = e.currentTarget;
+  resaltarEquipo(el);
   const nombre = el.dataset.nombre || id;
 
   const idReal = normalizarID(mapaEquipos[id] || id);
@@ -266,12 +321,14 @@ function badgeCriticos(lista){
   if(total === 0) return "";
 
   return `
-    <span 
+    <button
+      type="button"
       class="badge-criticos"
+      data-total="${total}"
       onclick="event.stopPropagation(); filtrarCriticosFamilia(this)"
       title="Ver solo críticos"
-    > ${total}
-    </span>
+      aria-pressed="false"
+    ><span class="badge-criticos-texto">⚠ ${total} críticos</span></button>
   `;
 }
 
@@ -289,7 +346,6 @@ function badgeCriticos(lista){
         <div class="param-detalle">
           <div><strong>Cómo:</strong> ${p.como || "-"}</div>
           <div><strong>Dónde:</strong> ${p.donde || "-"}</div>
-  <div><strong>Variables:</strong> ${p.variables || "-"}</div> 
         </div>
 
       </div>
@@ -338,7 +394,13 @@ function filtrarCriticosFamilia(badge){
 
   const grupo = badge.closest(".param-grupo");
 
-  grupo.classList.toggle("solo-criticos");
+  const soloCriticos = grupo.classList.toggle("solo-criticos");
+  const total = badge.dataset.total;
+
+  badge.classList.toggle("activo", soloCriticos);
+  badge.setAttribute("aria-pressed", soloCriticos);
+  badge.querySelector(".badge-criticos-texto").textContent = soloCriticos ? `Ver todos (${total})` : `⚠ ${total} críticos`;
+  badge.title = soloCriticos ? "Volver a ver todos los parámetros" : "Ver solo críticos";
 
 }
 
@@ -473,6 +535,24 @@ function actualizarDashboardTareas(){
   document.getElementById("kpi-medias").innerText = medias;
   document.getElementById("kpi-bajas").innerText = bajas;
 
+  const equiposDelMapa = [...document.querySelectorAll("[data-nombre]")]
+    .filter(el => !el.classList.contains("formador-lazo"));
+  const equiposConTareas = equiposDelMapa.filter(el => {
+    const id = normalizarID(el.dataset.nombre);
+    const idReal = normalizarID(mapaEquipos[id] || id);
+    return (tareasPorEquipo[idReal] || []).length > 0;
+  }).length;
+  const totalEquipos = equiposDelMapa.length;
+  const porcentajeConTareas = totalEquipos ? Math.round((equiposConTareas / totalEquipos) * 100) : 0;
+  const porcentajeSinTareas = 100 - porcentajeConTareas;
+  const equiposSinTareas = totalEquipos - equiposConTareas;
+
+  document.getElementById("cobertura-total-equipos").innerText = `${totalEquipos} equipos`;
+  document.getElementById("cobertura-con-tareas").style.width = `${porcentajeConTareas}%`;
+  document.getElementById("cobertura-sin-tareas").style.width = `${porcentajeSinTareas}%`;
+  document.getElementById("cobertura-con-tareas-num").innerText = `${porcentajeConTareas}% (${equiposConTareas})`;
+  document.getElementById("cobertura-sin-tareas-num").innerText = `${porcentajeSinTareas}% (${equiposSinTareas})`;
+
   const lista = document.getElementById("lista-equipos-criticos");
 
   const topEquipos = Object.entries(criticosPorEquipo)
@@ -486,40 +566,18 @@ function actualizarDashboardTareas(){
     </div>
   `).join("");
 
-  const max = Math.max(altas, medias, bajas, 1);
+  const porcentaje = cantidad => total ? Math.round((cantidad / total) * 100) : 0;
+  const altasPorcentaje = porcentaje(altas);
+  const mediasPorcentaje = porcentaje(medias);
+  const bajasPorcentaje = porcentaje(bajas);
 
-  document.getElementById("grafico-altas").style.width = `${(altas / max) * 100}%`;
-  document.getElementById("grafico-medias").style.width = `${(medias / max) * 100}%`;
-  document.getElementById("grafico-bajas").style.width = `${(bajas / max) * 100}%`;
+  document.getElementById("grafico-altas").style.width = `${altasPorcentaje}%`;
+  document.getElementById("grafico-medias").style.width = `${mediasPorcentaje}%`;
+  document.getElementById("grafico-bajas").style.width = `${bajasPorcentaje}%`;
 
-  document.getElementById("grafico-altas-num").innerText = altas;
-  document.getElementById("grafico-medias-num").innerText = medias;
-  document.getElementById("grafico-bajas-num").innerText = bajas;
-
-console.log("GRAFICO:", altas, medias, bajas);
-
-const ga = document.querySelector("#grafico-altas");
-const gm = document.querySelector("#grafico-medias");
-const gb = document.querySelector("#grafico-bajas");
-
-const na = document.querySelector("#grafico-altas-num");
-const nm = document.querySelector("#grafico-medias-num");
-const nb = document.querySelector("#grafico-bajas-num");
-
-console.log("ELEMENTOS:", ga, gm, gb, na, nm, nb);
-
-if(ga && gm && gb && na && nm && nb){
-
-  const max = Math.max(altas, medias, bajas, 1);
-
-  ga.style.width = ((altas / max) * 100) + "%";
-  gm.style.width = ((medias / max) * 100) + "%";
-  gb.style.width = ((bajas / max) * 100) + "%";
-
-  na.textContent = altas;
-  nm.textContent = medias;
-  nb.textContent = bajas;
-}
+  document.getElementById("grafico-altas-num").innerText = `${altasPorcentaje}%`;
+  document.getElementById("grafico-medias-num").innerText = `${mediasPorcentaje}%`;
+  document.getElementById("grafico-bajas-num").innerText = `${bajasPorcentaje}%`;
 
 
 }
@@ -580,9 +638,9 @@ function renderTareas(tareas){
   }
 
   return `
-    ${grupo("🔴 Altas", altas, "alta")}
-    ${grupo("🟡 Medias", medias, "media")}
-    ${grupo("🟢 Bajas", bajas, "baja")}
+    ${grupo("🔴 Alta criticidad", altas, "alta")}
+    ${grupo("🟡 Media criticidad", medias, "media")}
+    ${grupo("🟢 Baja criticidad", bajas, "baja")}
   `;
 }
 
@@ -624,7 +682,7 @@ function setProducto(tipo){
   planta.classList.remove('prod-gruesa','prod-delgada','prod-rollo');
 
   // 2. reiniciar animaciones
-  const barras = document.querySelectorAll('.barra, .barra-rollo, .barra-delgada');
+  const barras = document.querySelectorAll('.barra.salida, .barra-rollo, .barra-delgada');
 
   barras.forEach(barra => {
     barra.style.animation = 'none';
@@ -635,6 +693,131 @@ function setProducto(tipo){
   // 3. aplicar clase
   planta.classList.add('prod-' + tipo);
 }
+
+// Reproduce el lote completo de barras en un ciclo: corte, agrupación y traslado.
+// Las barras finales quedan aisladas de las reglas visuales del producto elegido.
+const TIEMPO_LLEGADA_CIZALLA = 30000;
+const CORTES_POR_LOTE = 5;
+const INTERVALO_CORTE_LOTE = 4000;
+const TIEMPO_SALIDA_POST_CORTE = 12000;
+const TIEMPO_RECORRIDO_TRAMO = 6000;
+let barrasEnCorte = [];
+
+function activarCizallaDelLote(){
+  const cizalla = document.querySelector('.cizalla-frio');
+  if(!cizalla) return;
+
+  cizalla.classList.remove('activa');
+  void cizalla.offsetWidth;
+  cizalla.classList.add('activa');
+}
+
+function prepararBarrasParaCorte(){
+  const escena = document.querySelector('.escena');
+  const visor = document.querySelector('.visor');
+  if(!escena || !visor) return;
+
+  const escala = parseFloat(getComputedStyle(visor).getPropertyValue('--map-zoom')) || 1;
+  const rectEscena = escena.getBoundingClientRect();
+
+  barrasEnCorte = [...document.querySelectorAll('.barra.salida')].map(barra => {
+    const rect = barra.getBoundingClientRect();
+    const copia = document.createElement('div');
+    const largo = rect.width / escala;
+
+    copia.className = 'barra-corte-origen';
+    copia.style.left = `${(rect.left - rectEscena.left) / escala}px`;
+    copia.style.top = `${(rect.top - rectEscena.top) / escala}px`;
+    copia.style.width = `${largo}px`;
+    copia.style.height = `${rect.height / escala}px`;
+    copia.style.background = getComputedStyle(barra).backgroundColor;
+    escena.appendChild(copia);
+
+    barra.style.visibility = 'hidden';
+
+    return { elemento: copia, izquierda: (rect.left - rectEscena.left) / escala, largo, largoInicial: largo, alto: rect.height / escala };
+  });
+}
+
+function aplicarCorteAlPaquete(){
+  barrasEnCorte.forEach(barra => {
+    if(barra.largo <= 1) return;
+
+    const largoCorte = Math.min(barra.largo, barra.largoInicial / CORTES_POR_LOTE);
+    const tramo = document.createElement('div');
+    tramo.className = 'barra-corte-tramo';
+    tramo.style.left = `${barra.izquierda + barra.largo - largoCorte}px`;
+    tramo.style.top = barra.elemento.style.top;
+    tramo.style.width = `${largoCorte}px`;
+    tramo.style.height = `${barra.alto}px`;
+    tramo.style.background = barra.elemento.style.background;
+    document.querySelector('.escena').appendChild(tramo);
+
+    barra.largo -= largoCorte;
+    barra.izquierda += largoCorte;
+    barra.elemento.style.transition = 'left 180ms linear, width 180ms linear';
+    barra.elemento.style.left = `${barra.izquierda}px`;
+    barra.elemento.style.width = `${barra.largo}px`;
+
+    requestAnimationFrame(() => {
+      tramo.style.transition = 'transform 4s linear, background 2s linear';
+      tramo.style.transform = 'translateX(-900px)';
+      tramo.style.background = '#6b6b6b';
+    });
+
+    // Tras recorrer los rodillos de la izquierda, el tramo sube hacia la
+    // zona de agrupación, siguiendo la misma ruta del flujo original.
+    setTimeout(() => {
+      tramo.style.transition = 'transform 2.5s linear';
+      tramo.style.transform = 'translate(-900px, -400px)';
+    }, 4200);
+
+    setTimeout(() => tramo.remove(), 7000);
+  });
+}
+
+function limpiarBarrasDeCorte(){
+  document.querySelectorAll('.barra-corte-origen, .barra-corte-tramo').forEach(barra => barra.remove());
+  barrasEnCorte = [];
+}
+
+function ejecutarCortesDelLote(numeroCorte = 1){
+  if(numeroCorte === 1) prepararBarrasParaCorte();
+  activarCizallaDelLote();
+  aplicarCorteAlPaquete();
+
+  if(numeroCorte < CORTES_POR_LOTE){
+    setTimeout(() => ejecutarCortesDelLote(numeroCorte + 1), INTERVALO_CORTE_LOTE);
+    return;
+  }
+
+  // Al terminar el quinto corte, el lote dispone de tiempo para salir del
+  // sector antes de que se inicie el siguiente paquete.
+  setTimeout(() => {
+    limpiarBarrasDeCorte();
+    iniciarCicloBarras();
+  }, TIEMPO_SALIDA_POST_CORTE);
+}
+
+function iniciarCicloBarras(){
+  const salida = document.querySelector('.salida-final');
+  if(!salida) return;
+
+  limpiarBarrasDeCorte();
+  document.querySelectorAll('.barra.salida').forEach(barra => {
+    barra.style.visibility = '';
+  });
+
+  salida.classList.remove('ciclo-barras-activo');
+  void salida.offsetWidth;
+  salida.classList.add('ciclo-barras-activo');
+
+  // El paquete visual llega a la cizalla cerca del segundo 30; recién entonces
+  // comienza la secuencia de cinco cortes.
+  setTimeout(ejecutarCortesDelLote, TIEMPO_LLEGADA_CIZALLA);
+}
+
+// La animación de barras vuelve a usar la secuencia original de corte.
 
 let cortes = 0;
 const paso = 180;
@@ -922,6 +1105,10 @@ if(cortesEnPaquete === 5){
 
   moverPaquete(-3100,5); // 🚀 salida larga
 
+  setTimeout(() => {
+    document.querySelectorAll(".paquete-listo").forEach(pieza => pieza.remove());
+  }, 9000);
+
   // ⏳ cuando termina el movimiento → subir
   setTimeout(() => {
 
@@ -993,12 +1180,50 @@ function subirPaquete(dy, velocidad = 1.2){
 
 console.log("🟢 SISTEMA REAL OK");
 
-const TIEMPO_LLEGADA = 48000;
+const TIEMPO_LLEGADA = 30000;
 const INTERVALO_CORTE = 4000;
+const DURACION_CICLO_LOTE_VISUAL = 73000;
+
+function iniciarCortesDelLote(){
+  let cortesDelLote = 0;
+
+  const ejecutarCorte = () => {
+    corteReal();
+    cortesDelLote++;
+
+    if(cortesDelLote < 5){
+      setTimeout(ejecutarCorte, INTERVALO_CORTE);
+    }
+  };
+
+  ejecutarCorte();
+}
+
+function reiniciarLoteVisual(){
+  const salida = document.querySelector('.salida-final');
+  if(!salida) return;
+
+  // Un bloque nuevo garantiza que las animaciones CSS vuelvan a nacer desde
+  // cero, sin reiniciar las piezas que ya siguen su flujo posterior.
+  const nuevoLote = salida.cloneNode(true);
+  nuevoLote.querySelectorAll('.lote2, .barra.salida').forEach(elemento => {
+    elemento.removeAttribute('style');
+  });
+  salida.replaceWith(nuevoLote);
+
+  // Este lote debe llegar primero a la cizalla antes de comenzar sus cortes.
+  setTimeout(iniciarCortesDelLote, TIEMPO_LLEGADA);
+}
 
 // 🔥 lanzar PRIMERA barra
 
 lanzarBarra();
+
+// El siguiente lote comienza al finalizar el ciclo completo medido (1:13).
+setTimeout(() => {
+  reiniciarLoteVisual();
+  setInterval(reiniciarLoteVisual, DURACION_CICLO_LOTE_VISUAL);
+}, DURACION_CICLO_LOTE_VISUAL);
 
 setInterval(() => {
 
@@ -1024,11 +1249,9 @@ setTimeout(() => {
 
   console.log("✂️ PRIMER CORTE");
 
-  corteReal();
+  // El corte se reconectará a este mismo ciclo en una etapa posterior.
 
-  setInterval(() => {
-    corteReal();
-  }, INTERVALO_CORTE);
+  iniciarCortesDelLote();
 
 }, TIEMPO_LLEGADA);
 
@@ -1402,3 +1625,86 @@ function obtenerEquiposHTML(){
 
   return [...new Set(equipos)]; // sin duplicados
 }
+
+// ================== NAVEGACIÓN DEL MAPA ==================
+const ZOOM_MINIMO = 0.55;
+const ZOOM_MAXIMO = 1.2;
+const ZOOM_PASO = 0.1;
+let zoomMapa = 1;
+
+function actualizarZoomMapa(nuevoZoom){
+  zoomMapa = Math.min(ZOOM_MAXIMO, Math.max(ZOOM_MINIMO, nuevoZoom));
+  const visor = document.querySelector('.visor');
+  const salida = document.getElementById('nivel-zoom');
+
+  if(visor) visor.style.setProperty('--map-zoom', zoomMapa);
+  if(salida) salida.textContent = `${Math.round(zoomMapa * 100)}%`;
+}
+
+function resaltarEquipo(elemento){
+  document.querySelectorAll('.equipo-seleccionado').forEach(el => {
+    el.classList.remove('equipo-seleccionado');
+  });
+
+  if(elemento) elemento.classList.add('equipo-seleccionado');
+}
+
+function enfocarEquipo(elemento){
+  if(!elemento) return;
+
+  elemento.click();
+  const rect = elemento.getBoundingClientRect();
+  window.scrollBy({
+    left: rect.left - (window.innerWidth / 2) + (rect.width / 2),
+    top: rect.top - (window.innerHeight / 2) + (rect.height / 2),
+    behavior: 'smooth'
+  });
+}
+
+function prepararNavegacionMapa(){
+  const input = document.getElementById('buscador-equipo');
+  const lista = document.getElementById('lista-equipos');
+  const buscar = document.getElementById('btn-buscar-equipo');
+  const menos = document.getElementById('btn-zoom-menos');
+  const mas = document.getElementById('btn-zoom-mas');
+  const inicio = document.getElementById('btn-vista-inicial');
+  if(!input || !lista) return;
+
+  const equipos = [...document.querySelectorAll('[onclick*="mostrarEquipo"]')]
+    .map(el => {
+      const coincidencia = el.getAttribute('onclick').match(/'([^']+)'/);
+      return {
+        nombre: (el.dataset.nombre || coincidencia?.[1] || '').trim(),
+        elemento: el
+      };
+    })
+    .filter(item => item.nombre);
+  const nombres = [...new Set(equipos.map(item => item.nombre))].sort((a, b) => a.localeCompare(b, 'es'));
+  lista.innerHTML = nombres.map(nombre => `<option value="${nombre}"></option>`).join('');
+
+  const buscarEquipo = () => {
+    const consulta = normalizarID(input.value);
+    const encontrado = equipos.find(item => normalizarID(item.nombre) === consulta)
+      || equipos.find(item => normalizarID(item.nombre).includes(consulta));
+
+    if(encontrado) enfocarEquipo(encontrado.elemento);
+    else input.setCustomValidity('No encontramos ese equipo en el mapa.');
+    input.reportValidity();
+    input.setCustomValidity('');
+  };
+
+  buscar.addEventListener('click', buscarEquipo);
+  input.addEventListener('keydown', event => {
+    if(event.key === 'Enter') buscarEquipo();
+  });
+  menos.addEventListener('click', () => actualizarZoomMapa(zoomMapa - ZOOM_PASO));
+  mas.addEventListener('click', () => actualizarZoomMapa(zoomMapa + ZOOM_PASO));
+  inicio.addEventListener('click', () => {
+    actualizarZoomMapa(1);
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+  });
+
+  actualizarZoomMapa(zoomMapa);
+}
+
+prepararNavegacionMapa();

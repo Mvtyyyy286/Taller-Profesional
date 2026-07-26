@@ -386,7 +386,7 @@ style="left:1090px; top:225.5px">
   </div>
 </div>
 
-<div class="formador-lazo f1" onclick="mostrarEquipo(event,'Formador de Lazos')"
+<div class="formador-lazo f1"
 data-nombre="formador_lazos"
 style="left:1300px; top:215px">
 
@@ -425,7 +425,7 @@ data-nombre="d8v"
   </div>
 </div>
 
-<div class="formador-lazo f2" onclick="mostrarEquipo(event,'Formador de Lazos')"
+<div class="formador-lazo f2"
 data-nombre="formador_lazos"
 style="left:1470px; top:215px">
 
@@ -458,7 +458,7 @@ style="left:1470px; top:215px">
   </div>
 </div>
 
-<div class="formador-lazo f3" onclick="mostrarEquipo(event,'Formador de Lazos')"
+<div class="formador-lazo f3"
 data-nombre="Formador_Lazos"
 style="left:1640px; top:215px">
 
@@ -499,7 +499,7 @@ data-nombre="d10v"
   </div>
 </div>
 
-<div class="formador-lazo f4" onclick="mostrarEquipo(event,'Formador de Lazos')"
+<div class="formador-lazo f4"
 data-nombre="Formador_Lazos"
 style="left:1810px; top:215px">
 
@@ -534,7 +534,7 @@ style="left:1810px; top:215px">
   </div>
 </div>
 
-<div class="formador-lazo f5" onclick="mostrarEquipo(event,'Formador de Lazos')"
+<div class="formador-lazo f5"
 data-nombre="Formador_Lazos"
 style="left:1980px; top:215px">
 
@@ -573,7 +573,7 @@ data-nombre="d12v"
   </div>
 </div>
 
-<div class="formador-lazo f6" onclick="mostrarEquipo(event,'Formador de Lazos')"
+<div class="formador-lazo f6"
 data-nombre="Formador_Lazos"
 style="left:2150px; top:215px">
 
@@ -608,7 +608,7 @@ style="left:2150px; top:215px">
   </div>
 </div>
 
-<div class="formador-lazo f7" onclick="mostrarEquipo(event,'Formador de Lazos')"
+<div class="formador-lazo f7"
 data-nombre="Formador_Lazos"
 style="left:2320px; top:215px">
 
@@ -781,7 +781,6 @@ style="left:3400px; top:550px">
 
 </div>
 <div class="formador-lazo f-monobloque"
-onclick="mostrarEquipo(event,'Formador de Lazos')"
 data-nombre="formador_lazos"
 style="left:3460px; top:540px">
 
@@ -1684,6 +1683,25 @@ Sub-Gerente (1) · Asesor técnico (1) · Jefes de célula (4) ·Ingeniero de pr
 
     </div>
 
+    <div class="dashboard-cobertura">
+      <div class="cobertura-header">
+        <h4>Cobertura de tareas</h4>
+        <strong id="cobertura-total-equipos">0 equipos</strong>
+      </div>
+
+      <div class="cobertura-item">
+        <span>Con tareas</span>
+        <div class="cobertura-track"><div class="cobertura-fill con-tareas" id="cobertura-con-tareas"></div></div>
+        <strong id="cobertura-con-tareas-num">0%</strong>
+      </div>
+
+      <div class="cobertura-item">
+        <span>Sin tareas</span>
+        <div class="cobertura-track"><div class="cobertura-fill sin-tareas" id="cobertura-sin-tareas"></div></div>
+        <strong id="cobertura-sin-tareas-num">0%</strong>
+      </div>
+    </div>
+
     <div class="dashboard-secundario">
 
       <div class="equipos-criticos">
@@ -1732,26 +1750,97 @@ Sub-Gerente (1) · Asesor técnico (1) · Jefes de célula (4) ·Ingeniero de pr
 
     <div class="param-kpi-grid">
 
-      <div class="param-kpi-card controlado">
-        <span class="kpi-numero" id="kpi-param-controlados">0</span>
-        <span class="kpi-label">Controlados</span>
+      <div class="param-kpi-columna">
+        <div class="param-kpi-card total">
+          <span class="kpi-numero" id="kpi-param-total">0</span>
+          <span class="kpi-label">Parámetros</span>
+        </div>
+        <div class="param-critico-card">
+          <span class="kpi-numero" id="kpi-param-criticos">0</span>
+          <span class="kpi-label">Críticos totales</span>
+        </div>
       </div>
 
-      <div class="param-kpi-card producto">
-        <span class="kpi-numero" id="kpi-param-producto">0</span>
-        <span class="kpi-label">Producto</span>
+      <div class="param-kpi-columna">
+        <div class="param-kpi-card controlado">
+          <span class="kpi-numero" id="kpi-param-controlados">0</span>
+          <span class="kpi-label" id="kpi-param-controlados-label">Controlados</span>
+        </div>
+        <div class="param-critico-card">
+          <span class="kpi-numero" id="kpi-param-controlados-criticos">0</span>
+          <span class="kpi-label">Críticos</span>
+        </div>
       </div>
 
-      <div class="param-kpi-card ruido">
-        <span class="kpi-numero" id="kpi-param-ruido">0</span>
-        <span class="kpi-label">Ruido</span>
+      <div class="param-kpi-columna">
+        <div class="param-kpi-card ruido">
+          <span class="kpi-numero" id="kpi-param-ruido">0</span>
+          <span class="kpi-label" id="kpi-param-ruido-label">Ruido</span>
+        </div>
+        <div class="param-critico-card">
+          <span class="kpi-numero" id="kpi-param-ruido-criticos">0</span>
+          <span class="kpi-label">Críticos</span>
+        </div>
       </div>
 
-      <div class="param-kpi-card critico">
-        <span class="kpi-numero" id="kpi-param-criticos">0</span>
-        <span class="kpi-label">Críticos</span>
+      <div class="param-kpi-columna">
+        <div class="param-kpi-card producto">
+          <span class="kpi-numero" id="kpi-param-producto">0</span>
+          <span class="kpi-label" id="kpi-param-producto-label">Producto</span>
+        </div>
+        <div class="param-critico-card">
+          <span class="kpi-numero" id="kpi-param-producto-criticos">0</span>
+          <span class="kpi-label">Críticos</span>
+        </div>
       </div>
 
+    </div>
+
+    <div class="dashboard-grafico distribucion-parametros">
+      <h4>Distribución de parámetros</h4>
+
+      <div class="param-chart-row">
+        <span>Controlados</span>
+        <div class="dash-track"><div class="dash-fill param-controlado" id="grafico-param-controlados"></div></div>
+        <strong id="grafico-param-controlados-num">0%</strong>
+      </div>
+
+      <div class="param-chart-row">
+        <span>Producto</span>
+        <div class="dash-track"><div class="dash-fill param-producto" id="grafico-param-producto"></div></div>
+        <strong id="grafico-param-producto-num">0%</strong>
+      </div>
+
+      <div class="param-chart-row">
+        <span>Ruido</span>
+        <div class="dash-track"><div class="dash-fill param-ruido" id="grafico-param-ruido"></div></div>
+        <strong id="grafico-param-ruido-num">0%</strong>
+      </div>
+
+      <div class="param-chart-row">
+        <span>No controlados</span>
+        <div class="dash-track"><div class="dash-fill param-no-controlado" id="grafico-param-no-controlados"></div></div>
+        <strong id="grafico-param-no-controlados-num">0%</strong>
+      </div>
+    </div>
+
+    <div class="dashboard-cobertura cobertura-parametros">
+      <div class="cobertura-header">
+        <h4>Cobertura de parámetros</h4>
+        <strong id="cobertura-param-total-equipos">0 equipos</strong>
+      </div>
+
+      <div class="cobertura-item">
+        <span>Con parámetros</span>
+        <div class="cobertura-track"><div class="cobertura-fill con-tareas" id="cobertura-param-con"></div></div>
+        <strong id="cobertura-param-con-num">0%</strong>
+      </div>
+
+      <div class="cobertura-item">
+        <span>Sin parámetros</span>
+        <div class="cobertura-track"><div class="cobertura-fill sin-tareas" id="cobertura-param-sin"></div></div>
+        <strong id="cobertura-param-sin-num">0%</strong>
+      </div>
     </div>
 
   </div>
